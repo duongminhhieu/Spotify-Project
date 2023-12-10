@@ -11,14 +11,16 @@ namespace SpotifyProject.Models
     public class Playlist
     {
         public string Name { get; set; }
+        public string Description { get; set; }
         public string Image { get; set; }
         public List<MediaItem> MediaItems { get; set; }
 
-        public Playlist(string name, string image)
+        public Playlist(string name, string image, string description)
         {
             Name = name;
             MediaItems = new List<MediaItem>();
             Image = image;
+            Description = description;
         }
 
         public void AddMediaItem(MediaItem mediaItem)

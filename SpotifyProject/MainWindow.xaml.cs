@@ -25,6 +25,12 @@ namespace SpotifyProject
             InitializeComponent();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+
         private void StackPanel_MouseEnter(object sender, MouseEventArgs e)
         {
             
@@ -87,6 +93,6 @@ namespace SpotifyProject
             }
         }
 
-       
+      
     }
 }

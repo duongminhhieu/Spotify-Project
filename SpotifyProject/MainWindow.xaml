@@ -10,6 +10,7 @@
     Width="1200"
     Height="600"
     Icon="/Resources/Icons/Spotify_icon.svg.ico"
+    Loaded="Window_Loaded"
     mc:Ignorable="d">
     <Window.Resources>
 

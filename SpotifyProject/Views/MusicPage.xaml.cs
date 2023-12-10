@@ -1,4 +1,5 @@
-﻿using SpotifyProject.Views.Dialog;
+﻿using SpotifyProject.Services;
+using SpotifyProject.Views.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,9 +22,11 @@ namespace SpotifyProject.Views
     /// </summary>
     public partial class MusicPage : Page
     {
+        PlaylistService playlistService;
         public MusicPage()
         {
             InitializeComponent();
+            playlistService = new PlaylistService(DatabaseConnection.GetInstance().getConnection());
         }
 
         private void NewPlaylistBtn_Click(object sender, RoutedEventArgs e)
@@ -36,7 +39,10 @@ namespace SpotifyProject.Views
                 string playlistName = dialog.PlaylistName;
                 string description = dialog.Description;
                 string playlistImagePath = dialog.PlaylistImagePath;
-                // TODO: Xử lý logic để tạo mới playlist với tên là playlistName
+
+                int insertRow = playlistService.InsertPlaylist(playlistName, description, playlistImagePath);
+                MessageBox.Show("Insert " + insertRow + " row");
+
             }
         }
     }
