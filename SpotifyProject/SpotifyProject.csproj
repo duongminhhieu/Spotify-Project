@@ -10,12 +10,11 @@
   <ItemGroup>
     <None Remove="Resources\Icons\Spotify_icon.svg.ico" />
     <None Remove="Resources\Icons\Spotify_icon.svg.png" />
+    <None Remove="Resources\Images\unknown.jpg" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Converters\" />
-    <Folder Include="Resources\Images\" />
     <Folder Include="Services\" />
     <Folder Include="ViewModels\" />
   </ItemGroup>
@@ -29,6 +28,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\Icons\Spotify_icon.svg.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\Images\unknown.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>

@@ -62,7 +62,7 @@ namespace SpotifyProject
                         MessageBox.Show("Search clicked!");
                         break;
                     case "musicPanel":
-                        MessageBox.Show("Music clicked!");
+                        mainFrame.Navigate(new Uri("Views/MusicPage.xaml", UriKind.Relative));
                         break;
                     case "videoPanel":
                         MessageBox.Show("Video clicked!");
