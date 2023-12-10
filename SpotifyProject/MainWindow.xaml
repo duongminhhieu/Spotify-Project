@@ -156,7 +156,10 @@
                 VerticalAlignment="Center"
                 Orientation="Vertical">
 
-                <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid
+                    Margin="0,0,0,8"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="1*" />
@@ -251,29 +254,163 @@
 
             <StackPanel
                 Grid.Column="2"
-                VerticalAlignment="Center"
                 HorizontalAlignment="Center"
+                VerticalAlignment="Center"
                 Orientation="Horizontal">
 
                 <fa:FontAwesome
-                    Margin="0 0 20 0"
                     x:Name="volumeIcon"
+                    Margin="0,0,20,0"
                     FontSize="20"
                     Foreground="White"
                     Icon="VolumeUp" />
                 <Slider
-                    HorizontalAlignment="Stretch"
                     x:Name="SliderVolume"
+                    HorizontalAlignment="Stretch"
                     Style="{StaticResource Horizontal_Slider}"
                     Value="500" />
             </StackPanel>
         </Grid>
 
-        <StackPanel Background="Gray" DockPanel.Dock="Left" Width="100">
-            
+        <StackPanel
+            x:Name="SliderBar"
+            Width="360"
+            Background="#121212"
+            DockPanel.Dock="Left"
+            Orientation="Vertical">
+
+            <StackPanel
+                Margin="10,0,0,4"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+
+                <fa:FontAwesome
+                    x:Name="homeIcon"
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    Foreground="White"
+                    Icon="Home" />
+                <TextBlock
+                    x:Name="homeText"
+                    Margin="10,10,10,10"
+                    FontSize="16"
+                    FontWeight="DemiBold"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Home
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+                <fa:FontAwesome
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    Foreground="White"
+                    Icon="Search" />
+                <TextBlock
+                    Margin="10,10,10,10"
+                    FontSize="16"
+                    FontWeight="Regular"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Search
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+                <fa:FontAwesome
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    Foreground="White"
+                    Icon="Music" />
+                <TextBlock
+                    Margin="10,10,10,10"
+                    FontSize="16"
+                    FontWeight="Regular"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Music
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+                <fa:FontAwesome
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    Foreground="White"
+                    Icon="VideoCamera" />
+                <TextBlock
+                    Margin="10,10,10,10"
+                    FontSize="16"
+                    FontWeight="Regular"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Video
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+                <fa:FontAwesome
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    Foreground="White"
+                    Icon="Gear" />
+                <TextBlock
+                    Margin="10,10,10,10"
+                    FontSize="16"
+                    FontWeight="Regular"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Setting
+                </TextBlock>
+            </StackPanel>
+
+            <StackPanel Margin="10,10,0,4" Orientation="Horizontal">
+
+                <TextBlock
+                    Margin="10,10,10,10"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    TextWrapping="WrapWithOverflow">
+                    Recents
+                </TextBlock>
+
+
+                <ListView
+                    x:Name="playingSongs"
+                    Height="263"
+                    Background="#0000"
+                    BorderThickness="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Width="194" Margin="1,2,1,0">
+                                <StackPanel.Background>
+                                    <SolidColorBrush Opacity="0.3" Color="White" />
+                                </StackPanel.Background>
+                                <TextBlock
+                                    Margin="3,3,3,0"
+                                    FontSize="12"
+                                    FontWeight="DemiBold"
+                                    Text="{Binding Name}" />
+                                <TextBlock
+                                    Margin="3,0,3,3"
+                                    FontSize="9"
+                                    Text="{Binding Singer}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+
+            </StackPanel>
+
+
+
         </StackPanel>
 
-        <StackPanel Background="Green"></StackPanel>
+        <!--  Use a Frame to host the Page  -->
+        <Frame Name="mainFrame" NavigationUIVisibility="Hidden" />
 
     </DockPanel>
 
