@@ -52,8 +52,11 @@ namespace SpotifyProject.Views
                 int insertRow = musicPageVM.PlaylistService.InsertPlaylist(playlistName, playlistImagePath, description);
                 if (insertRow == 1) {
                     MessageBox.Show("Create playlist successfully!");
-
                 }
+
+                // Reload playlist
+                musicPageVM.LoadPlaylists();
+                listPlaylist.ItemsSource = musicPageVM.Playlists;
 
             }
         }
