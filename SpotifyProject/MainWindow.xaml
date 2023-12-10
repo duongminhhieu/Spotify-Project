@@ -274,14 +274,19 @@
 
         <StackPanel
             x:Name="SliderBar"
-            Width="360"
+            Width="320"
             Background="#121212"
             DockPanel.Dock="Left"
             Orientation="Vertical">
 
             <StackPanel
-                Margin="10,0,0,4"
+                x:Name="homePanel"
+                Margin="10,12,0,4"
                 VerticalAlignment="Center"
+                Cursor="Hand"
+                MouseDown="StackPanel_MouseDown"
+                MouseEnter="StackPanel_MouseEnter"
+                MouseLeave="StackPanel_MouseLeave"
                 Orientation="Horizontal">
 
                 <fa:FontAwesome
@@ -301,7 +306,14 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+            <StackPanel
+                x:Name="searchPanel"
+                Margin="10,0,0,4"
+                Cursor="Hand"
+                MouseDown="StackPanel_MouseDown"
+                MouseEnter="StackPanel_MouseEnter"
+                MouseLeave="StackPanel_MouseLeave"
+                Orientation="Horizontal">
                 <fa:FontAwesome
                     Margin="10,10,10,10"
                     FontSize="20"
@@ -317,7 +329,14 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+            <StackPanel
+                x:Name="musicPanel"
+                Margin="10,0,0,4"
+                Cursor="Hand"
+                MouseDown="StackPanel_MouseDown"
+                MouseEnter="StackPanel_MouseEnter"
+                MouseLeave="StackPanel_MouseLeave"
+                Orientation="Horizontal">
                 <fa:FontAwesome
                     Margin="10,10,10,10"
                     FontSize="20"
@@ -333,7 +352,14 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+            <StackPanel
+                x:Name="videoPanel"
+                Margin="10,0,0,4"
+                Cursor="Hand"
+                MouseDown="StackPanel_MouseDown"
+                MouseEnter="StackPanel_MouseEnter"
+                MouseLeave="StackPanel_MouseLeave"
+                Orientation="Horizontal">
                 <fa:FontAwesome
                     Margin="10,10,10,10"
                     FontSize="20"
@@ -349,7 +375,14 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Margin="10,0,0,4" Orientation="Horizontal">
+            <StackPanel
+                x:Name="settingPanel"
+                Margin="10,0,0,4"
+                Cursor="Hand"
+                MouseDown="StackPanel_MouseDown"
+                MouseEnter="StackPanel_MouseEnter"
+                MouseLeave="StackPanel_MouseLeave"
+                Orientation="Horizontal">
                 <fa:FontAwesome
                     Margin="10,10,10,10"
                     FontSize="20"
@@ -365,7 +398,7 @@
                 </TextBlock>
             </StackPanel>
 
-            <StackPanel Margin="10,10,0,4" Orientation="Horizontal">
+            <StackPanel Margin="10,10,0,4" Orientation="Vertical">
 
                 <TextBlock
                     Margin="10,10,10,10"

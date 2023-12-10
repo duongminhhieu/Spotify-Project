@@ -24,5 +24,69 @@ namespace SpotifyProject
         {
             InitializeComponent();
         }
+
+        private void StackPanel_MouseEnter(object sender, MouseEventArgs e)
+        {
+            
+            var stackPanel = sender as StackPanel;
+            if (stackPanel != null)
+            {
+                SetFontWeight(stackPanel, FontWeights.UltraBold);
+            }
+        }
+
+        private void StackPanel_MouseLeave(object sender, MouseEventArgs e)
+        {
+            var stackPanel = sender as StackPanel;
+            if (stackPanel != null)
+            {
+                SetFontWeight(stackPanel, FontWeights.Normal);
+            }
+        }
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Xử lý sự kiện click ở đây
+            var stackPanel = sender as StackPanel;
+            if (stackPanel != null)
+            {
+                var stackPanelName = stackPanel.Name;
+
+                // Thực hiện các hành động tương ứng với sự kiện click (ví dụ: hiển thị nội dung, chuyển trang, ...)
+                switch (stackPanelName)
+                {
+                    case "homePanel":
+                        MessageBox.Show("Home clicked!");
+                        break;
+                    case "searchPanel":
+                        MessageBox.Show("Search clicked!");
+                        break;
+                    case "musicPanel":
+                        MessageBox.Show("Music clicked!");
+                        break;
+                    case "videoPanel":
+                        MessageBox.Show("Video clicked!");
+                        break;
+                    case "settingPanel":
+                        MessageBox.Show("Setting clicked!");
+                        break;
+        
+                }
+            }
+        }
+
+        private void SetFontWeight(StackPanel stackPanel, FontWeight fontWeight)
+        {
+            var textBlock = stackPanel.Children.OfType<TextBlock>().FirstOrDefault();
+            var icon = stackPanel.Children.OfType<FontAwesome.WPF.FontAwesome>().FirstOrDefault();
+
+            if (textBlock != null && icon != null)
+            {
+                textBlock.FontWeight = fontWeight;
+                icon.FontWeight = fontWeight;
+            }
+        }
+
+       
     }
 }
