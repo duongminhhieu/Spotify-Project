@@ -1,4 +1,5 @@
 ﻿using SpotifyProject.Services;
+using SpotifyProject.ViewModels;
 using SpotifyProject.Views.Dialog;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,19 @@ namespace SpotifyProject.Views
     /// </summary>
     public partial class MusicPage : Page
     {
-        PlaylistService playlistService;
+        private MusicPageVM musicPageVM;
         public MusicPage()
         {
             InitializeComponent();
-            playlistService = new PlaylistService(DatabaseConnection.GetInstance().getConnection());
+            musicPageVM = new MusicPageVM();
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            musicPageVM.LoadPlaylists();
+            this.DataContext = musicPageVM;
+            listPlaylist.ItemsSource = musicPageVM.Playlists;
+           
         }
 
         private void NewPlaylistBtn_Click(object sender, RoutedEventArgs e)
@@ -40,10 +49,15 @@ namespace SpotifyProject.Views
                 string description = dialog.Description;
                 string playlistImagePath = dialog.PlaylistImagePath;
 
-                int insertRow = playlistService.InsertPlaylist(playlistName, description, playlistImagePath);
-                MessageBox.Show("Insert " + insertRow + " row");
+                int insertRow = musicPageVM.PlaylistService.InsertPlaylist(playlistName, playlistImagePath, description);
+                if (insertRow == 1) {
+                    MessageBox.Show("Create playlist successfully!");
+
+                }
 
             }
         }
+
+       
     }
 }

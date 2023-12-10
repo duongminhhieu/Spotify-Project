@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpotifyProject.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
@@ -42,6 +43,25 @@ namespace SpotifyProject.Services
             command.CommandText = "DELETE FROM Playlists WHERE Id = @id";
             command.Parameters.AddWithValue("@id", id);
             command.ExecuteNonQuery();
+        }
+
+        public List<Playlist> GetAllPlaylist()
+        {
+            List<Playlist> playlists = new List<Playlist>();
+            SQLiteCommand command = new SQLiteCommand(connection);
+            command.CommandText = "SELECT * FROM Playlists";
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                int id = Convert.ToInt32(reader["Id"]);
+                string name = reader["Name"].ToString();
+                string image = reader["Image"].ToString();
+                string description = reader["Description"].ToString();
+                Playlist playlist = new Playlist(name, image, description);
+                playlist.Id = id;
+                playlists.Add(playlist);
+            }
+            return playlists;
         }
     }
 }
