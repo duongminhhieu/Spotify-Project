@@ -1,11 +1,6 @@
 ﻿using SpotifyProject.Models;
 using SpotifyProject.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using WMPLib;
 
 namespace SpotifyProject.ViewModels
 {
@@ -32,6 +27,15 @@ namespace SpotifyProject.ViewModels
         public void LoadPlaylist()
         {
             Playlist = PlaylistService.GetPlaylist(Playlist.Id);
+        }
+
+        public void PlaySong(Song selectedSong)
+        {
+            WindowsMediaPlayer wmp = new WindowsMediaPlayer();
+            IWMPMedia media = wmp.newMedia(selectedSong.Path);
+
+            wmp.currentPlaylist.appendItem(media);
+            wmp.controls.play();
         }
         
        

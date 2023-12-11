@@ -151,7 +151,7 @@ namespace SpotifyProject.Views
             {
                 //NavigationService.Navigate(new PlaylistViewPage(selectedPlaylist));
                 //MessageBox.Show(selectedSong.Title);
-                //PlaylistPageVM.PlaySong(selectedSong);
+                PlaylistPageVM.PlaySong(selectedSong);
             }
         }
     }

@@ -261,6 +261,7 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid
+                        MouseDown="Grid_MouseDown"
                         Height="36"
                         Margin="10"
                         HorizontalAlignment="Center"
@@ -317,10 +318,6 @@
 
                             </StackPanel>
                         </StackPanel>
-
-
-
-
 
                     </Grid>
                 </DataTemplate>
