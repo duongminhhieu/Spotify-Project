@@ -1,5 +1,6 @@
 ﻿using Id3;
 using Microsoft.Win32;
+using SpotifyProject.Helper;
 using SpotifyProject.Models;
 using SpotifyProject.Services;
 using SpotifyProject.ViewModels;
@@ -32,7 +33,12 @@ namespace SpotifyProject.Views
             InitializeComponent();
             this.PlaylistPageVM= new PlaylistPageVM(playlist);
             this.DataContext = playlist;
+        }
 
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
+            listItemsMedia.ItemsSource = lst;
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
@@ -85,23 +91,24 @@ namespace SpotifyProject.Views
                         using (var mp3 = new Mp3(filePath))
                         {
                             Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2X);
+                            var duration = mp3.Audio.Duration;
 
                             if (tag != null)
                             {
                                 // Lấy thông tin từ các khung ID3
-                                string title = tag.Title == null ? "" : tag.Title;
-                                string artist = tag.Artists == null ? "" : tag.Artists;
-                                string album = tag.Album == null ? "" : tag.Album;
-                                string year = tag.Year == null ? "" : tag.Year;
-                                string genre = tag.Genre == null ? "" : tag.Genre;
-                                string length = tag.Length == null ? "" : tag.Length;
+                                string title = tag.Title == null ? "Unknown" : tag.Title;
+                                string artist = tag.Artists == null ? "Unknown" : tag.Artists;
+                                string album = tag.Album == null ? "Unknown" : tag.Album;
+                                string year = tag.Year == null ? "Unknown" : tag.Year;
+                                string genre = tag.Genre == null ? "Unknown" : tag.Genre;
+                                string length = $"{duration.Minutes}:{duration.Seconds}";
                                 
-                                Song song = new Song(title, artist, album, year, genre, length, filePath);
+                                Song song = new Song( title, artist, album, year, genre, length, filePath);
                                 PlaylistPageVM.AddSongToPlaylist(song);
                             }else
                             {
                                 // Create Object Song
-                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "", "", "", "", "", filePath);
+                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "Unknown", "Unknown", "Unknown", "Unknown", $"{duration.Minutes}:{duration.Seconds}", filePath);
                                 PlaylistPageVM.AddSongToPlaylist(song);
                             }
                         }
@@ -120,6 +127,11 @@ namespace SpotifyProject.Views
         }
 
         private void ListViewItem_PreviewMouseRemoveLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
         }

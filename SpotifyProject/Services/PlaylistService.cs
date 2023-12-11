@@ -125,8 +125,7 @@ namespace SpotifyProject.Services
 
                     // get list Media items
                     List<MediaItem> lst = new List<MediaItem>();
-                    lst = mediaService.GetListMediaItemsOfPlaylist(id);
-
+                    lst = mediaService.GetListMediaItemsOfPlaylist(id);                  
                     playlist.MediaItems = lst;
                 }
                 return playlist;

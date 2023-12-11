@@ -54,6 +54,7 @@ namespace SpotifyProject.Services
                 SQLiteDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
+                    int id = Convert.ToInt32(reader["Id"]);
                     string title = reader["Title"].ToString();
                     string artist = reader["Artist"].ToString();
                     string type = reader["Type"].ToString();
