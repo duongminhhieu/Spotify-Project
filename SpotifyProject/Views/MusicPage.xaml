@@ -16,6 +16,7 @@
         <converter:TextTrimmingConverter x:Key="TextTrimmingConverter" />
     </Page.Resources>
 
+ 
     <Grid Background="#121216">
 
         <Grid.RowDefinitions>
@@ -120,6 +121,8 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel
+                        Cursor="Hand"
+                        MouseDown="StackPanel_MouseDown"
                         Width="150"
                         Height="220"
                         Margin="10"
@@ -148,6 +151,5 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
     </Grid>
 </Page>

@@ -1,4 +1,5 @@
-﻿using SpotifyProject.Services;
+﻿using SpotifyProject.Models;
+using SpotifyProject.Services;
 using SpotifyProject.ViewModels;
 using SpotifyProject.Views.Dialog;
 using System;
@@ -12,9 +13,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SpotifyProject.Views
 {
@@ -61,6 +60,15 @@ namespace SpotifyProject.Views
             }
         }
 
-       
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Playlist? selectedPlaylist = ((FrameworkElement)sender).DataContext as Playlist;
+
+            if (selectedPlaylist != null)
+            {
+                NavigationService.Navigate(new PlaylistViewPage(selectedPlaylist));
+            }
+
+        }
     }
 }
