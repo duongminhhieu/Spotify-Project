@@ -34,6 +34,7 @@ namespace SpotifyProject.ViewModels
             WindowsMediaPlayer wmp = new WindowsMediaPlayer();
             IWMPMedia media = wmp.newMedia(selectedSong.Path);
 
+            wmp.controls.stop();
             wmp.currentPlaylist.appendItem(media);
             wmp.controls.play();
         }

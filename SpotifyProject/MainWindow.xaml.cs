@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SpotifyProject.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -93,6 +94,21 @@ namespace SpotifyProject
             }
         }
 
-      
+        private void PlayIcon_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(PlayerMediaService.IsPlaying)
+            {
+                PlayerMediaService.PauseSong();
+                PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Play;
+            } else if(PlayerMediaService.IsPaused)
+            {
+                PlayerMediaService.ContinueSong();
+                PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Pause;
+            } else if(PlayerMediaService.IsStopped)
+            {
+                PlayerMediaService.PlaySong(PlayerMediaService.player.URL);
+                PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Pause;
+            }
+        }
     }
 }

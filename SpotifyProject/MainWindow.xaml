@@ -187,6 +187,9 @@
                         Foreground="White"
                         Icon="StepBackward" />
                     <fa:FontAwesome
+                        x:Name="PlayIcon"
+                        Cursor="Hand"
+                        MouseDown="PlayIcon_MouseDown"
                         Grid.Column="2"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"

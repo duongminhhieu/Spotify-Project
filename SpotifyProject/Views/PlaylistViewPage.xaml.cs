@@ -57,6 +57,12 @@ namespace SpotifyProject.Views
         private void PlayMusicBtn_Click(object sender, RoutedEventArgs e)
         {
 
+            PlayerMediaService.CurrentPlaylistId = PlaylistPageVM.Playlist.Id;
+            PlayerMediaService.CurrentSongId = PlaylistPageVM.Playlist.MediaItems[0].Id;
+            PlayerMediaService.CurrentSongIndex = 0;
+            PlayerMediaService.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
+
+
         }
         private void OptionBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -149,9 +155,11 @@ namespace SpotifyProject.Views
 
             if (selectedSong != null)
             {
-                //NavigationService.Navigate(new PlaylistViewPage(selectedPlaylist));
-                //MessageBox.Show(selectedSong.Title);
-                PlaylistPageVM.PlaySong(selectedSong);
+                PlayerMediaService.CurrentPlaylistId = PlaylistPageVM.Playlist.Id;
+                PlayerMediaService.CurrentSongId = selectedSong.Id;
+                PlayerMediaService.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
+                PlayerMediaService.PlaySong(selectedSong.Path);
+
             }
         }
     }
