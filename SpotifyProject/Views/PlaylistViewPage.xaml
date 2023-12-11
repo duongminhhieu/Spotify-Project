@@ -201,31 +201,35 @@
                             Cursor="Hand"
                             SelectionMode="Single">
                             <ListView.Items>
-                                <!--  Customize your sub-menu items here  -->
-
                                 <ListViewItem
                                     Padding="8"
                                     Content="Add Files"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="White" />
+                                    Foreground="White"
+                                    PreviewMouseLeftButtonDown="ListViewItem_PreviewMouseLeftButtonDown" />
                                 <ListViewItem
                                     Padding="8"
                                     Content="Update Playlist"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="White" />
+                                    Foreground="White"
+                                    PreviewMouseLeftButtonDown="ListViewItem_PreviewMouseLeftUpdatePlaylistButtonDown"
+                                    />
                                 <ListViewItem
                                     Padding="8"
                                     Content="Remove Playlist"
                                     FontSize="14"
                                     FontWeight="Bold"
-                                    Foreground="White" />
+                                    Foreground="White"
+                                     PreviewMouseLeftButtonDown="ListViewItem_PreviewMouseRemoveLeftButtonDown"
+                                   />
                                 <!--  Add more items as needed  -->
                             </ListView.Items>
                         </ListView>
                     </Border>
                 </Popup>
+
             </StackPanel>
 
         </StackPanel>
