@@ -12,9 +12,11 @@ namespace SpotifyProject.Services
     public class PlaylistService
     {
         SQLiteConnection connection;
+        private MediaService mediaService;
         public PlaylistService(SQLiteConnection conn)
         {
             connection = conn;
+            mediaService = new MediaService(conn);
         }
         public int InsertPlaylist(string name, string image, string description)
         {
@@ -86,6 +88,12 @@ namespace SpotifyProject.Services
                     string description = reader["Description"].ToString();
                     Playlist playlist = new Playlist(name, image, description);
                     playlist.Id = id;
+
+                    // get list Media items
+                    List<MediaItem> lst = new List<MediaItem>();
+                    lst = mediaService.GetListMediaItemsOfPlaylist(id);
+
+                    playlist.MediaItems = lst;
                     playlists.Add(playlist);
                 }
                 return playlists;
@@ -96,6 +104,39 @@ namespace SpotifyProject.Services
                 return new List<Playlist>();
             }
            
+        }
+
+        public Playlist GetPlaylist(int id)
+        {
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(connection);
+                command.CommandText = "SELECT * FROM Playlists WHERE Id = @id";
+                command.Parameters.AddWithValue("@id", id);
+                SQLiteDataReader reader = command.ExecuteReader();
+                Playlist playlist = new Playlist("", "", "");
+                while (reader.Read())
+                {
+                    string name = reader["Name"].ToString();
+                    string image = reader["Image"].ToString();
+                    string description = reader["Description"].ToString();
+                    playlist = new Playlist(name, image, description);
+                    playlist.Id = id;
+
+                    // get list Media items
+                    List<MediaItem> lst = new List<MediaItem>();
+                    lst = mediaService.GetListMediaItemsOfPlaylist(id);
+
+                    playlist.MediaItems = lst;
+                }
+                return playlist;
+            }
+            catch
+            {
+                MessageBox.Show("Error getting playlist");
+                return new Playlist("", "", "");
+            }
+            
         }
 
     }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SpotifyProject.Models
 {
-    public class MediaItem
+    public class MediaItem : INotifyPropertyChanged
     {
         public string Title { get; set; }
         public string Artist { get; set; }
@@ -21,6 +22,8 @@ namespace SpotifyProject.Models
             Type = type;
             Path = path;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
     }
 
     public enum MediaType

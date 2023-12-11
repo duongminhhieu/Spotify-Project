@@ -1,6 +1,7 @@
 ﻿using SpotifyProject.Models;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
@@ -22,13 +23,15 @@ namespace SpotifyProject.Services
         {
             try {
                 SQLiteCommand command = new SQLiteCommand(connection);
-                command.CommandText = "INSERT INTO MediaItems (Title, Artist, Type, Path, Album, Year, PlaylistId) VALUES (@title, @artist, @type, @path, @album, @year, @idPlaylist)";
+                command.CommandText = "INSERT INTO MediaItems (Title, Artist, Type, Path, Album, Year, Genre, Length, PlaylistId) VALUES (@title, @artist, @type, @path, @album, @year, @genre, @length, @idPlaylist)";
                 command.Parameters.AddWithValue("@title", song.Title);
                 command.Parameters.AddWithValue("@artist", song.Artist);
                 command.Parameters.AddWithValue("@type", song.Type);
                 command.Parameters.AddWithValue("@path", song.Path);
                 command.Parameters.AddWithValue("@album", song.Album);
                 command.Parameters.AddWithValue("@year", song.Year);
+                command.Parameters.AddWithValue("@genre", song.Genre);
+                command.Parameters.AddWithValue("@length", song.Length);
                 command.Parameters.AddWithValue("@idPlaylist", idPlaylist);
 
                 int result = command.ExecuteNonQuery();
@@ -36,6 +39,43 @@ namespace SpotifyProject.Services
             } catch(Exception err) {
                 MessageBox.Show("Error adding song to playlist");
                 return -1;
+            }
+            
+        }
+
+        public List<MediaItem> GetListMediaItemsOfPlaylist(int idPlaylist)
+        {
+            List<MediaItem> listMediaItems = new List<MediaItem>();
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(connection);
+                command.CommandText = "SELECT * FROM MediaItems WHERE PlaylistId = @idPlaylist";
+                command.Parameters.AddWithValue("@idPlaylist", idPlaylist);
+                SQLiteDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    string title = reader["Title"].ToString();
+                    string artist = reader["Artist"].ToString();
+                    string type = reader["Type"].ToString();
+                    string path = reader["Path"].ToString();
+                    string album = reader["Album"].ToString();
+                    string year = reader["Year"].ToString();
+                    string gerne = reader["Genre"].ToString();
+                    string length = reader["Length"].ToString();
+
+                    if (type == "0")
+                    {
+                        listMediaItems.Add(new Song(title, artist, album, year, gerne, length, path));
+                    } else
+                    {
+                        listMediaItems.Add(new Video(title, artist, path));
+                    }
+                }
+                return listMediaItems;
+            } catch(Exception err)
+            {
+                MessageBox.Show("Error getting list of media items");
+                return listMediaItems;
             }
             
         }

@@ -89,19 +89,23 @@ namespace SpotifyProject.Views
                             if (tag != null)
                             {
                                 // Lấy thông tin từ các khung ID3
-                                string title = tag.Title;
-                                string artist = tag.Artists;
-                                string album = tag.Album;
-                                string year = tag.Year;
+                                string title = tag.Title == null ? "" : tag.Title;
+                                string artist = tag.Artists == null ? "" : tag.Artists;
+                                string album = tag.Album == null ? "" : tag.Album;
+                                string year = tag.Year == null ? "" : tag.Year;
+                                string genre = tag.Genre == null ? "" : tag.Genre;
+                                string length = tag.Length == null ? "" : tag.Length;
+                                
+                                Song song = new Song(title, artist, album, year, genre, length, filePath);
+                                PlaylistPageVM.AddSongToPlaylist(song);
                             }else
                             {
                                 // Create Object Song
-                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "", MediaType.Song, filePath, "", "");
+                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "", "", "", "", "", filePath);
                                 PlaylistPageVM.AddSongToPlaylist(song);
                             }
                         }
-                           
-                       
+                          
                     }
                 }
 

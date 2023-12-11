@@ -26,10 +26,14 @@ namespace SpotifyProject.ViewModels
         public void AddSongToPlaylist(Song song)
         {
             int insertRow = MediaService.AddMediaItemSong(song, Playlist.Id);
-            if(insertRow == 1)
-            {
-                MessageBox.Show("Song added to playlist");
-            }
+          
         }
+
+        public void LoadPlaylist()
+        {
+            Playlist = PlaylistService.GetPlaylist(Playlist.Id);
+        }
+        
+       
     }
 }
