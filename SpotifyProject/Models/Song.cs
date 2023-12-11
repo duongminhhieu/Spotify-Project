@@ -9,9 +9,16 @@ namespace SpotifyProject.Models
 {
     public class Song : MediaItem
     {
-        public Song(string title, string artist, MediaType type, string path) : base(title, artist, type, path)
+        public string Album { get; set; }
+        public string Year { get; set; }
+  
+        public Song(string title, string artist, MediaType type, string path, string album, string year) : base(title, artist, type, path)
         {
+            this.Album = album;
+            this.Year = year;
         }
+   
+        
     }
 
 }

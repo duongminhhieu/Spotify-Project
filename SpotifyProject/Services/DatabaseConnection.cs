@@ -55,7 +55,7 @@ namespace SpotifyProject.Services
                 SQLiteCommand command = new SQLiteCommand(conn);
                 command.CommandText = "CREATE TABLE IF NOT EXISTS Playlists (Id INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT, Image TEXT, Description TEXT)";
                 command.ExecuteNonQuery();
-                command.CommandText = "CREATE TABLE IF NOT EXISTS MediaItems (Id INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT, Artist TEXT, Type TEXT, Path TEXT, PlaylistId INTEGER, FOREIGN KEY(PlaylistId) REFERENCES Playlists(Id))";
+                command.CommandText = "CREATE TABLE IF NOT EXISTS MediaItems (Id INTEGER PRIMARY KEY AUTOINCREMENT, Title TEXT, Artist TEXT, Type TEXT, Path TEXT, Album TEXT, Year TEXT, PlaylistId INTEGER, FOREIGN KEY(PlaylistId) REFERENCES Playlists(Id))";
                 command.ExecuteNonQuery();
             }
             catch (Exception ex)

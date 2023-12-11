@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SpotifyProject.Models
 {
-    public class Playlist
+    public class Playlist : INotifyPropertyChanged
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -23,6 +23,8 @@ namespace SpotifyProject.Models
             Image = image;
             Description = description;
         }
+
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public void AddMediaItem(MediaItem mediaItem)
         {

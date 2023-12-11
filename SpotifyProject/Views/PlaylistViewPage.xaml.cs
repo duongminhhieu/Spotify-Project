@@ -1,7 +1,11 @@
-﻿using Microsoft.Win32;
+﻿using Id3;
+using Microsoft.Win32;
 using SpotifyProject.Models;
+using SpotifyProject.Services;
+using SpotifyProject.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,12 +26,13 @@ namespace SpotifyProject.Views
     /// </summary>
     public partial class PlaylistViewPage : Page
     {
-        private Playlist Playlist;
+       private PlaylistPageVM PlaylistPageVM { get; set; }
         public PlaylistViewPage(Playlist playlist)
         {
             InitializeComponent();
-            this.Playlist = playlist;
+            this.PlaylistPageVM= new PlaylistPageVM(playlist);
             this.DataContext = playlist;
+
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
@@ -52,36 +57,6 @@ namespace SpotifyProject.Views
             SubMenuPopup.IsOpen = true;
         }
 
-      
-        private void optionList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            // Khởi tạo OpenFileDialog
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            // Thiết lập các thuộc tính cho OpenFileDialog
-            openFileDialog.Filter = "Music files (*.mp3, *.wav)|*.mp3;*.wav|All files (*.*)|*.*";
-            openFileDialog.Title = "Select Music Files";
-            openFileDialog.Multiselect = true; // Cho phép người dùng chọn nhiều file
-
-            // Mở hộp thoại chọn file
-            bool? result = openFileDialog.ShowDialog();
-
-            // Xử lý kết quả chọn file
-            if (result == true)
-            {
-                // Lấy danh sách các đường dẫn của các file được chọn
-                string[] selectedFiles = openFileDialog.FileNames;
-
-                // Xử lý logic với danh sách các đường dẫn file ở đây
-                foreach (string filePath in selectedFiles)
-                {
-                    // Thêm logic xử lý mỗi file được chọn
-                    // Ví dụ: Hiển thị tên file hoặc thêm vào danh sách các file nhạc
-                    Console.WriteLine(filePath);
-                }
-            }
-        }
-
         private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is ListViewItem listViewItem)
@@ -90,7 +65,7 @@ namespace SpotifyProject.Views
                 OpenFileDialog openFileDialog = new OpenFileDialog();
 
                 // Thiết lập các thuộc tính cho OpenFileDialog
-                openFileDialog.Filter = "Music files (*.mp3, *.wav)|*.mp3;*.wav|All files (*.*)|*.*";
+                openFileDialog.Filter = "Music files (*.mp3)|*.mp3|All files (*.*)|*.*";
                 openFileDialog.Title = "Select Music Files";
                 openFileDialog.Multiselect = true; // Cho phép người dùng chọn nhiều file
 
@@ -106,17 +81,41 @@ namespace SpotifyProject.Views
                     // Xử lý logic với danh sách các đường dẫn file ở đây
                     foreach (string filePath in selectedFiles)
                     {
-                        // Thêm logic xử lý mỗi file được chọn
-                        // Ví dụ: Hiển thị tên file hoặc thêm vào danh sách các file nhạc
-                        Console.WriteLine(filePath);
+                        // Đọc thông tin ID3 của file MP3
+                        using (var mp3 = new Mp3(filePath))
+                        {
+                            Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2X);
+
+                            if (tag != null)
+                            {
+                                // Lấy thông tin từ các khung ID3
+                                string title = tag.Title;
+                                string artist = tag.Artists;
+                                string album = tag.Album;
+                                string year = tag.Year;
+                            }else
+                            {
+                                // Create Object Song
+                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "", MediaType.Song, filePath, "", "");
+                                PlaylistPageVM.AddSongToPlaylist(song);
+                            }
+                        }
+                           
+                       
                     }
                 }
+
                 // Đóng Popup sau khi xử lý
                 SubMenuPopup.IsOpen = false;
             }
         }
 
         private void ListViewItem_PreviewMouseLeftUpdatePlaylistButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void ListViewItem_PreviewMouseRemoveLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
 
         }
