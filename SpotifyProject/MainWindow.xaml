@@ -114,6 +114,7 @@
 
             <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
                 <Image
+                    x:Name="imgInfoSong"
                     Width="60"
                     Height="60"
                     Margin="10,0,0,0"
@@ -129,7 +130,7 @@
                         FontWeight="DemiBold"
                         Foreground="White"
                         TextWrapping="WrapWithOverflow">
-                        We don't talk any more
+                        Song
                     </TextBlock>
                     <TextBlock
                         x:Name="nameArtist"
@@ -138,7 +139,7 @@
                         FontWeight="Normal"
                         Foreground="White"
                         TextWrapping="WrapWithOverflow">
-                        Son Tung MTP
+                        Artist
                     </TextBlock>
                 </StackPanel>
 
@@ -171,6 +172,9 @@
 
 
                     <fa:FontAwesome
+                        x:Name="RandomSongBtn"
+                        Cursor="Hand"
+                        MouseDown="RandomSongBtn_MouseDown"
                         Height="20"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
@@ -180,6 +184,9 @@
                         Icon="Random" />
 
                     <fa:FontAwesome
+                        x:Name="PreSongBtn"
+                        Cursor="Hand"
+                        MouseDown="PreSongBtn_MouseDown"
                         Grid.Column="1"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
@@ -188,15 +195,18 @@
                         Icon="StepBackward" />
                     <fa:FontAwesome
                         x:Name="PlayIcon"
-                        Cursor="Hand"
-                        MouseDown="PlayIcon_MouseDown"
                         Grid.Column="2"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
+                        Cursor="Hand"
                         FontSize="20"
                         Foreground="White"
-                        Icon="Play" />
+                        Icon="Play"
+                        MouseDown="PlayIcon_MouseDown" />
                     <fa:FontAwesome
+                        Cursor="Hand"
+                        x:Name="NextSongBtn"
+                        MouseDown="NextSongBtn_MouseDown"
                         Grid.Column="3"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
@@ -205,6 +215,9 @@
                         Icon="StepForward" />
 
                     <fa:FontAwesome
+                        x:Name="RepeatSongBtn"
+                        Cursor="Hand"
+                        MouseDown="RepeatSongBtn_MouseDown"
                         Grid.Column="4"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
@@ -223,6 +236,7 @@
 
 
                     <TextBlock
+                        x:Name="DurationInfoSong"
                         Grid.Column="0"
                         Margin="0,0,10,0"
                         HorizontalAlignment="Right"
@@ -236,12 +250,19 @@
 
                     <StackPanel Grid.Column="1">
                         <Slider
+                            x:Name="SliderBarProcessing"
                             HorizontalAlignment="Stretch"
+                            Cursor="Hand"
+                            GotMouseCapture="SliderBarProcessing_GotMouseCapture"
+                            IsSelectionRangeEnabled="True"
+                            LostMouseCapture="SliderBarProcessing_LostMouseCapture"
                             Style="{StaticResource Horizontal_Slider}"
-                            Value="500" />
+                            ValueChanged="SliderBar_ValueChanged"
+                            Value="0" />
                     </StackPanel>
 
                     <TextBlock
+                        x:Name="EndDurationInfoSong"
                         Grid.Column="2"
                         Margin="10,0,0,0"
                         HorizontalAlignment="Left"
@@ -270,19 +291,22 @@
                     Icon="VolumeUp" />
                 <Slider
                     x:Name="SliderVolume"
+                    ValueChanged="SliderVolume_ValueChanged"
+                    GotMouseCapture="SliderVolume_GotMouseCapture"
+                    LostMouseCapture="SliderVolume_LostMouseCapture"
                     HorizontalAlignment="Stretch"
                     Style="{StaticResource Horizontal_Slider}"
-                    Value="500" />
+                    Maximum="100"
+                    Value="50" />
             </StackPanel>
         </Grid>
 
         <StackPanel
-            x:Name="SliderBar"
+            x:Name="SliderBarPanel"
             Width="320"
             Background="#121212"
             DockPanel.Dock="Left"
             Orientation="Vertical">
-
             <StackPanel
                 x:Name="homePanel"
                 Margin="10,12,0,4"

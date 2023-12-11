@@ -34,11 +34,23 @@ namespace SpotifyProject.Views
             this.PlaylistPageVM= new PlaylistPageVM(playlist);
             this.DataContext = playlist;
         }
+        public event EventHandler<bool> PlayPauseStateChanged;
+
+        private void OnPlayPauseStateChanged(bool isPlaying)
+        {
+            PlayPauseStateChanged?.Invoke(this, isPlaying);
+        }
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
             listItemsMedia.ItemsSource = lst;
+
+            // Đăng ký sự kiện từ MainWindow
+            if (Window.GetWindow(this) is MainWindow mainWindow)
+            {
+                PlayPauseStateChanged += (s, isPlaying) => mainWindow.OnPlayPauseStateChanged(s, isPlaying);
+            }
         }
 
         private void BackBtn_Click(object sender, RoutedEventArgs e)
@@ -57,12 +69,11 @@ namespace SpotifyProject.Views
         private void PlayMusicBtn_Click(object sender, RoutedEventArgs e)
         {
 
-            PlayerMediaService.CurrentPlaylistId = PlaylistPageVM.Playlist.Id;
-            PlayerMediaService.CurrentSongId = PlaylistPageVM.Playlist.MediaItems[0].Id;
+            PlayerMediaService.CurrentPlaylist = PlaylistPageVM.Playlist;
+            PlayerMediaService.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
             PlayerMediaService.CurrentSongIndex = 0;
             PlayerMediaService.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
-
-
+            OnPlayPauseStateChanged(PlayerMediaService.IsPlaying);
         }
         private void OptionBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -155,12 +166,14 @@ namespace SpotifyProject.Views
 
             if (selectedSong != null)
             {
-                PlayerMediaService.CurrentPlaylistId = PlaylistPageVM.Playlist.Id;
-                PlayerMediaService.CurrentSongId = selectedSong.Id;
+                PlayerMediaService.CurrentPlaylist = PlaylistPageVM.Playlist;
+                PlayerMediaService.CurrentSong = selectedSong;
                 PlayerMediaService.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
                 PlayerMediaService.PlaySong(selectedSong.Path);
-
+                OnPlayPauseStateChanged(PlayerMediaService.IsPlaying);
+                
             }
         }
+
     }
 }

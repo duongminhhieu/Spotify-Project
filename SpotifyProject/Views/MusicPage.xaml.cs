@@ -29,12 +29,16 @@ namespace SpotifyProject.Views
             musicPageVM = new MusicPageVM();
         }
 
+    
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             musicPageVM.LoadPlaylists();
             this.DataContext = musicPageVM;
             listPlaylist.ItemsSource = musicPageVM.Playlists;
-           
+
+
+       
+
         }
 
         private void NewPlaylistBtn_Click(object sender, RoutedEventArgs e)

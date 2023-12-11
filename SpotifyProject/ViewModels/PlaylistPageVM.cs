@@ -11,6 +11,9 @@ namespace SpotifyProject.ViewModels
         public PlaylistService PlaylistService { get; set; }
         public MediaService MediaService { get; set; }
 
+        public delegate void ChangeStateIconDelegate();
+        public event ChangeStateIconDelegate ChangeStateIcon;
+
         public PlaylistPageVM(Playlist playlist)
         {
             Playlist = playlist;

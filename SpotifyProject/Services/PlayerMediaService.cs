@@ -1,4 +1,6 @@
 ﻿
+using SpotifyProject.Models;
+using System;
 using WMPLib;
 
 namespace SpotifyProject.Services
@@ -22,8 +24,8 @@ namespace SpotifyProject.Services
         public static bool IsMuted { get; set; } = false;
         public static int Volume { get; set; } = 50;
         public static int CurrentSongIndex { get; set; } = 0;
-        public static int CurrentPlaylistId { get; set; } = 0;
-        public static int CurrentSongId { get; set; } = 0;
+        public static Playlist CurrentPlaylist { get; set; }
+        public static Song CurrentSong { get; set; }
         public static int CurrentSongPosition { get; set; } = 0;
         public static int CurrentSongDuration { get; set; } = 0;
         public static int CurrentSongProgress { get; set; } = 0;
@@ -77,17 +79,7 @@ namespace SpotifyProject.Services
             CurrentSongPosition = position;
         }
 
-        public static void SetSongProgress(int progress)
-        {
-            player.controls.currentPosition = progress;
-            CurrentSongProgress = progress;
-        }
-
-        public static void SetSongProgressPercentage(int progressPercentage)
-        {
-            player.controls.currentPosition = (player.controls.currentItem.duration / 100) * progressPercentage;
-            CurrentSongProgressPercentage = progressPercentage;
-        }
+   
 
         public static void SetRepeatMode(RepeatMode repeatMode)
         {
@@ -128,6 +120,13 @@ namespace SpotifyProject.Services
             return (int)player.controls.currentItem.duration;
         }
 
+        // get current song position
+        public static int GetCurrentSongPosition()
+        {
+            return (int)player.controls.currentPosition;
+        }
+
+
         // contunue song
         public static void ContinueSong()
         {
@@ -137,7 +136,45 @@ namespace SpotifyProject.Services
             IsStopped = false;
         }
 
+        // next song
+        public static void NextSong()
+        {
+            if (CurrentPlaylist != null)
+            {
+                if (CurrentSongIndex < CurrentPlaylist.MediaItems.Count - 1)
+                {
+                    CurrentSongIndex++;
+                    CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
+                    PlaySong(CurrentSong.Path);
+                }
+                else
+                {
+                    CurrentSongIndex = 0;
+                    CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
+                    PlaySong(CurrentSong.Path);
+                }
+            }
+        }
       
+        // previous song
+        public static void PreviousSong()
+        {
+            if (CurrentPlaylist != null)
+            {
+                if (CurrentSongIndex > 0)
+                {
+                    CurrentSongIndex--;
+                    CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
+                    PlaySong(CurrentSong.Path);
+                }
+                else
+                {
+                    CurrentSongIndex = CurrentPlaylist.MediaItems.Count - 1;
+                    CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
+                    PlaySong(CurrentSong.Path);
+                }
+            }
+        }
 
     }
 }
