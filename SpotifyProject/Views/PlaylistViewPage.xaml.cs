@@ -96,14 +96,14 @@ namespace SpotifyProject.Views
                             if (tag != null)
                             {
                                 // Lấy thông tin từ các khung ID3
-                                string title = tag.Title == null ? "Unknown" : tag.Title;
-                                string artist = tag.Artists == null ? "Unknown" : tag.Artists;
-                                string album = tag.Album == null ? "Unknown" : tag.Album;
-                                string year = tag.Year == null ? "Unknown" : tag.Year;
-                                string genre = tag.Genre == null ? "Unknown" : tag.Genre;
+                                string title = tag.Title;
+                                string artist = tag.Artists;
+                                string album = tag.Album;
+                                string year = tag.Year;
+                                string genre = tag.Genre;
                                 string length = $"{duration.Minutes}:{duration.Seconds}";
                                 
-                                Song song = new Song( title, artist, album, year, genre, length, filePath);
+                                Song song = new Song( title ?? "Unknown", (artist == "" ? "Unknown" : artist), album ?? "Unknown", year ?? "Unknown", genre ?? "Unknown", length ?? "Unknown", filePath);
                                 PlaylistPageVM.AddSongToPlaylist(song);
                             }else
                             {
@@ -114,6 +114,12 @@ namespace SpotifyProject.Views
                         }
                           
                     }
+
+                    // reload playlist
+                    PlaylistPageVM.LoadPlaylist();
+                    List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
+                    listItemsMedia.ItemsSource = lst;
+                    MessageBox.Show("Add song successfully!");
                 }
 
                 // Đóng Popup sau khi xử lý
@@ -134,6 +140,19 @@ namespace SpotifyProject.Views
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // select song and play
+            Song? selectedSong = ((FrameworkElement)sender).DataContext as Song;
+
+            if (selectedSong != null)
+            {
+                //NavigationService.Navigate(new PlaylistViewPage(selectedPlaylist));
+                //MessageBox.Show(selectedSong.Title);
+                //PlaylistPageVM.PlaySong(selectedSong);
+            }
         }
     }
 }

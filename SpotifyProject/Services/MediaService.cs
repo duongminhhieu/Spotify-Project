@@ -66,10 +66,10 @@ namespace SpotifyProject.Services
 
                     if (type == "0")
                     {
-                        listMediaItems.Add(new Song(title, artist, album, year, gerne, length, path));
+                        listMediaItems.Add(new Song(id, title, artist, album, year, gerne, length, path));
                     } else
                     {
-                        listMediaItems.Add(new Video(title, artist, path));
+                        listMediaItems.Add(new Video(id, title, artist, path));
                     }
                 }
                 return listMediaItems;

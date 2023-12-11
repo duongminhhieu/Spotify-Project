@@ -174,7 +174,7 @@
                 VerticalAlignment="Center"
                 Cursor="Hand">
                 <fa:FontAwesome
-                    FontSize="32"
+                    FontSize="28"
                     Foreground="#B8B8B8"
                     Icon="HeartOutline" />
             </StackPanel>
@@ -240,76 +240,87 @@
         <ListView
             x:Name="listItemsMedia"
             Grid.Row="2"
+            Width="Auto"
             Background="Transparent"
             BorderThickness="0">
-            <ListView.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Vertical" />
-                </ItemsPanelTemplate>
-            </ListView.ItemsPanel>
+            <ListView.Resources>
+                <Style TargetType="ScrollBar">
+                    <Setter Property="Background" Value="Green" />
+                    <Setter Property="BorderBrush" Value="Blue" />
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="Width" Value="1" />
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="ScrollBar">
+                                <!--  Thực hiện tùy chỉnh giao diện cho thanh scroll tại đây  -->
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListView.Resources>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid
-                        Height="80"
+                        Height="36"
                         Margin="10"
+                        HorizontalAlignment="Center"
                         Cursor="Hand">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
                             <ColumnDefinition Width="1*" />
-                            <ColumnDefinition Width="1*" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock
-                            Margin="0,10,0,0"
+                            Margin="0,0,20,0"
+                            VerticalAlignment="Center"
                             FontSize="16"
                             FontWeight="Bold"
                             Foreground="White"
-                            Text="{Binding Id}" />
+                            Text="{Binding Id}"
+                            TextAlignment="Center" />
 
-                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <StackPanel
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Orientation="Horizontal">
                             <Image
                                 x:Name="imgPlaylistImage"
-                                Width="40"
-                                Height="40"
+                                Width="32"
+                                Height="32"
                                 Cursor="Hand"
                                 Source="/Resources/Images/unknown.jpg"
                                 Stretch="UniformToFill" />
 
                             <StackPanel Orientation="Vertical">
                                 <TextBlock
-                                    Margin="0,10,0,0"
-                                    FontSize="16"
+                                    Margin="10,0,0,0"
+                                    FontSize="14"
                                     FontWeight="Bold"
                                     Foreground="White"
                                     Text="{Binding Title}" />
-                                <TextBlock
-                                    Margin="0,10,0,0"
-                                    FontSize="16"
-                                    FontWeight="Bold"
-                                    Foreground="White"
-                                    Text="{Binding Artist}" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        FontSize="14"
+                                        FontWeight="DemiBold"
+                                        Foreground="#9D9F9D"
+                                        Text="{Binding Artist}" />
+                                    <TextBlock
+                                        Margin="10,0,0,0"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        Foreground="#9D9F9D"
+                                        Text="{Binding Length}" />
+                                </StackPanel>
+
                             </StackPanel>
                         </StackPanel>
 
 
-                        <StackPanel Grid.Column="2">
-                            <TextBlock
-                                Margin="0,5,0,0"
-                                FontSize="14"
-                                FontWeight="Normal"
-                                Foreground="Gray"
-                                Text="{Binding Genre}" />
-                        </StackPanel>
-                        <StackPanel Grid.Column="3">
-                            <TextBlock
-                                Margin="0,5,0,0"
-                                FontSize="14"
-                                FontWeight="Normal"
-                                Foreground="Gray"
-                                Text="{Binding Length}" />
-                        </StackPanel>
+
+
 
                     </Grid>
                 </DataTemplate>
