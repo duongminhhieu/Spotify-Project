@@ -15,9 +15,6 @@
         <Color x:Key="GradientStopColor1">#FF58E74A</Color>
     </Page.Resources>
 
-
-
-
     <Grid>
 
         <Grid.Background>

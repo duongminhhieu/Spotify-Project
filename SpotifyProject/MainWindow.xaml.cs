@@ -77,7 +77,7 @@ namespace SpotifyProject
                         mainFrame.Navigate(new Uri("Views/MusicPage.xaml", UriKind.Relative));
                         break;
                     case "videoPanel":
-                        MessageBox.Show("Video clicked!");
+                        mainFrame.Navigate(new Uri("Views/VideoPage.xaml", UriKind.Relative));
                         break;
                     case "settingPanel":
                         MessageBox.Show("Setting clicked!");
@@ -308,6 +308,17 @@ namespace SpotifyProject
         private void SliderVolume_LostMouseCapture(object sender, MouseEventArgs e)
         {
 
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+
+            if(e.Key == Key.Space)
+            {
+               
+
+            }   
+            
         }
     }
 }

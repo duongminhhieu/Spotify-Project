@@ -143,7 +143,10 @@
                     </TextBlock>
                 </StackPanel>
 
-                <StackPanel Margin="20,0,0,0" VerticalAlignment="Center">
+                <StackPanel
+                    Margin="20,0,0,0"
+                    VerticalAlignment="Center"
+                    Cursor="Hand">
                     <fa:FontAwesome
                         x:Name="favoriteIcon"
                         FontSize="20"
@@ -173,26 +176,26 @@
 
                     <fa:FontAwesome
                         x:Name="RandomSongBtn"
-                        Cursor="Hand"
-                        MouseDown="RandomSongBtn_MouseDown"
                         Height="20"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
+                        Cursor="Hand"
                         FontSize="20"
                         Foreground="White"
-                        Icon="Random" />
+                        Icon="Random"
+                        MouseDown="RandomSongBtn_MouseDown" />
 
                     <fa:FontAwesome
                         x:Name="PreSongBtn"
-                        Cursor="Hand"
-                        MouseDown="PreSongBtn_MouseDown"
                         Grid.Column="1"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
+                        Cursor="Hand"
                         FontSize="20"
                         Foreground="White"
-                        Icon="StepBackward" />
+                        Icon="StepBackward"
+                        MouseDown="PreSongBtn_MouseDown" />
                     <fa:FontAwesome
                         x:Name="PlayIcon"
                         Grid.Column="2"
@@ -204,26 +207,26 @@
                         Icon="Play"
                         MouseDown="PlayIcon_MouseDown" />
                     <fa:FontAwesome
-                        Cursor="Hand"
                         x:Name="NextSongBtn"
-                        MouseDown="NextSongBtn_MouseDown"
                         Grid.Column="3"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
+                        Cursor="Hand"
                         FontSize="20"
                         Foreground="White"
-                        Icon="StepForward" />
+                        Icon="StepForward"
+                        MouseDown="NextSongBtn_MouseDown" />
 
                     <fa:FontAwesome
                         x:Name="RepeatSongBtn"
-                        Cursor="Hand"
-                        MouseDown="RepeatSongBtn_MouseDown"
                         Grid.Column="4"
                         Margin="20,0,20,0"
                         HorizontalAlignment="Center"
+                        Cursor="Hand"
                         FontSize="20"
                         Foreground="White"
-                        Icon="RotateRight" />
+                        Icon="RotateRight"
+                        MouseDown="RepeatSongBtn_MouseDown" />
 
                 </Grid>
 
@@ -291,12 +294,13 @@
                     Icon="VolumeUp" />
                 <Slider
                     x:Name="SliderVolume"
-                    ValueChanged="SliderVolume_ValueChanged"
+                    HorizontalAlignment="Stretch"
+                    Cursor="Hand"
                     GotMouseCapture="SliderVolume_GotMouseCapture"
                     LostMouseCapture="SliderVolume_LostMouseCapture"
-                    HorizontalAlignment="Stretch"
-                    Style="{StaticResource Horizontal_Slider}"
                     Maximum="100"
+                    Style="{StaticResource Horizontal_Slider}"
+                    ValueChanged="SliderVolume_ValueChanged"
                     Value="50" />
             </StackPanel>
         </Grid>

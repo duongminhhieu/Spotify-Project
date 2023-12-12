@@ -15,13 +15,15 @@ namespace SpotifyProject.Models
         public string Description { get; set; }
         public string Image { get; set; }
         public List<MediaItem> MediaItems { get; set; }
+        public PlaylistType Type { get; set; }
 
-        public Playlist(string name, string image, string description)
+        public Playlist(string name, string image, string description, PlaylistType type)
         {
             Name = name;
             MediaItems = new List<MediaItem>();
             Image = image;
             Description = description;
+            Type = type;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -30,6 +32,12 @@ namespace SpotifyProject.Models
         {
             MediaItems.Add(mediaItem);
         }
+    }
+    public enum PlaylistType
+    {
+        Song = 1,
+        Video = 2,
+        Unknown = 3
     }
 
 }

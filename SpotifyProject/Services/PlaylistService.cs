@@ -18,15 +18,16 @@ namespace SpotifyProject.Services
             connection = conn;
             mediaService = new MediaService(conn);
         }
-        public int InsertPlaylist(string name, string image, string description)
+        public int InsertPlaylist(string name, string image, string description, string type)
         {
             try
             {
                 SQLiteCommand command = new SQLiteCommand(connection);
-                command.CommandText = "INSERT INTO Playlists (Name, Image, Description) VALUES (@name, @image, @description)";
+                command.CommandText = "INSERT INTO Playlists (Name, Image, Description, Type) VALUES (@name, @image, @description, @type)";
                 command.Parameters.AddWithValue("@name", name);
                 command.Parameters.AddWithValue("@image", image);
                 command.Parameters.AddWithValue("@description", description);
+                command.Parameters.AddWithValue("@type", type);
                 int result = command.ExecuteNonQuery();
                 return result;
             }
@@ -72,13 +73,15 @@ namespace SpotifyProject.Services
             
         }
 
-        public List<Playlist> GetAllPlaylist()
+        public List<Playlist> GetAllPlaylist(PlaylistType type)
         {
             try
             {
                 List<Playlist> playlists = new List<Playlist>();
                 SQLiteCommand command = new SQLiteCommand(connection);
-                command.CommandText = "SELECT * FROM Playlists";
+                command.CommandText = "SELECT * FROM Playlists WHERE Type = @type";
+                command.Parameters.AddWithValue("@type", type.ToString());
+
                 SQLiteDataReader reader = command.ExecuteReader();
                 while (reader.Read())
                 {
@@ -86,7 +89,7 @@ namespace SpotifyProject.Services
                     string name = reader["Name"].ToString();
                     string image = reader["Image"].ToString();
                     string description = reader["Description"].ToString();
-                    Playlist playlist = new Playlist(name, image, description);
+                    Playlist playlist = new Playlist(name, image, description, type);
                     playlist.Id = id;
 
                     // get list Media items
@@ -114,13 +117,14 @@ namespace SpotifyProject.Services
                 command.CommandText = "SELECT * FROM Playlists WHERE Id = @id";
                 command.Parameters.AddWithValue("@id", id);
                 SQLiteDataReader reader = command.ExecuteReader();
-                Playlist playlist = new Playlist("", "", "");
+                Playlist playlist = new Playlist("", "", "", PlaylistType.Unknown);
                 while (reader.Read())
                 {
                     string name = reader["Name"].ToString();
                     string image = reader["Image"].ToString();
                     string description = reader["Description"].ToString();
-                    playlist = new Playlist(name, image, description);
+                    int type = Convert.ToInt32(reader["Type"].ToString());
+                    playlist = new Playlist(name, image, description, type == 1 ? PlaylistType.Song : PlaylistType.Video);
                     playlist.Id = id;
 
                     // get list Media items
@@ -133,7 +137,7 @@ namespace SpotifyProject.Services
             catch
             {
                 MessageBox.Show("Error getting playlist");
-                return new Playlist("", "", "");
+                return new Playlist("", "", "", PlaylistType.Unknown);
             }
             
         }

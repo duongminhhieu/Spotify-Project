@@ -1,5 +1,4 @@
 ﻿using SpotifyProject.Models;
-using SpotifyProject.Services;
 using SpotifyProject.ViewModels;
 using SpotifyProject.Views.Dialog;
 using System;
@@ -13,28 +12,30 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace SpotifyProject.Views
 {
     /// <summary>
-    /// Interaction logic for MusicPage.xaml
+    /// Interaction logic for VideoPage.xaml
     /// </summary>
-    public partial class MusicPage : Page
+    public partial class VideoPage : Page
     {
-        private MusicPageVM musicPageVM;
-        public MusicPage()
+
+        private VideoPageVM videoPageVM;
+        public VideoPage()
         {
             InitializeComponent();
-            musicPageVM = new MusicPageVM();
+            videoPageVM = new VideoPageVM();
         }
 
-    
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            musicPageVM.LoadPlaylists();
-            this.DataContext = musicPageVM;
-            listPlaylist.ItemsSource = musicPageVM.Playlists;
+            videoPageVM.LoadPlaylists();
+            this.DataContext = videoPageVM;
+            listPlaylist.ItemsSource = videoPageVM.Playlists;
         }
 
         private void NewPlaylistBtn_Click(object sender, RoutedEventArgs e)
@@ -48,19 +49,20 @@ namespace SpotifyProject.Views
                 string description = dialog.Description;
                 string playlistImagePath = dialog.PlaylistImagePath;
 
-                int insertRow = musicPageVM.PlaylistService.InsertPlaylist(playlistName, playlistImagePath, description, PlaylistType.Song.ToString());
-                if (insertRow == 1) {
+                int insertRow = videoPageVM.PlaylistService.InsertPlaylist(playlistName, playlistImagePath, description, PlaylistType.Video.ToString());
+                if (insertRow == 1)
+                {
                     MessageBox.Show("Create playlist successfully!");
                 }
 
                 // Reload playlist
-                musicPageVM.LoadPlaylists();
-                listPlaylist.ItemsSource = musicPageVM.Playlists;
+                videoPageVM.LoadPlaylists();
+                listPlaylist.ItemsSource = videoPageVM.Playlists;
 
             }
         }
 
-        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        private void panelChoosePlaylist_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Playlist? selectedPlaylist = ((FrameworkElement)sender).DataContext as Playlist;
 
@@ -68,7 +70,6 @@ namespace SpotifyProject.Views
             {
                 NavigationService.Navigate(new PlaylistViewPage(selectedPlaylist));
             }
-
         }
     }
 }
