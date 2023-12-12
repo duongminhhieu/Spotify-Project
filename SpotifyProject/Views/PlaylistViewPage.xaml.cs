@@ -4,6 +4,7 @@ using SpotifyProject.Helper;
 using SpotifyProject.Models;
 using SpotifyProject.Services;
 using SpotifyProject.ViewModels;
+using SpotifyProject.Views.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -274,9 +275,10 @@ namespace SpotifyProject.Views
                 {
                     PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
                     PlayerMedia.CurrentVideo = selectedVideo;
-                    PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedVideo);
-                    PlayerMedia.PlaySong(selectedVideo.Path);
-                    OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+                    //PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedVideo);
+
+                    var dialog = new VideoViewDialog();
+                    bool? result = dialog.ShowDialog();
 
                 }
             }

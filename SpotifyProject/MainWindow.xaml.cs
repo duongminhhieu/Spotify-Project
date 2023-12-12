@@ -165,11 +165,9 @@ namespace SpotifyProject
           
         }
 
-
-  
         public void UpdateProcessingInfo()
         {
-            if (PlayerMedia.CurrentSong != null && PlayerMedia.player != null)
+            if (PlayerMedia.CurrentSong != null && PlayerMedia.player != null )
             {
 
                 int currentPosition = PlayerMedia.GetCurrentSongPosition();
