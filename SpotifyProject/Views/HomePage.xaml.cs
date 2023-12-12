@@ -134,10 +134,5 @@ namespace SpotifyProject.Views
             }
 
         }
-
-        private void ListView_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            e.Handled = true;
-        }
     }
 }
