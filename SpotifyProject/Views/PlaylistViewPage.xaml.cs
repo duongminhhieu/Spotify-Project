@@ -88,12 +88,16 @@ namespace SpotifyProject.Views
                 return;
             }
 
-            PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
-            PlayerMedia.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
-            PlayerMedia.CurrentSongIndex = 0;
-            PlayerMedia.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
+            if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
+            {
+                PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                PlayerMedia.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
+                PlayerMedia.CurrentSongIndex = 0;
+                PlayerMedia.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
 
-            OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+                OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+            }
+        
         }
         private void OptionBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -278,6 +282,7 @@ namespace SpotifyProject.Views
                     //PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedVideo);
 
                     var dialog = new VideoViewDialog();
+                    PlayerMedia.PauseSong();
                     bool? result = dialog.ShowDialog();
 
                 }
