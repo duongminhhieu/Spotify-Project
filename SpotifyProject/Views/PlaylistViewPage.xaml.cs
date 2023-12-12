@@ -7,6 +7,7 @@ using SpotifyProject.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WMPLib;
 
 namespace SpotifyProject.Views
 {
@@ -43,8 +45,18 @@ namespace SpotifyProject.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
-            listItemsMedia.ItemsSource = lst;
+            if(PlaylistPageVM.Playlist.Type == PlaylistType.Video)
+            {
+                List<Video> lst = MediaHelper.castMediaItemsToVideos(PlaylistPageVM.Playlist.MediaItems);
+                listItemsMedia.ItemsSource = lst;
+                AmountMedia.Text = lst.Count.ToString() + " Medias";
+            }
+            else
+            {
+                List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
+                listItemsMedia.ItemsSource = lst;
+                AmountMedia.Text = lst.Count.ToString() + " Medias";
+            }
 
             // Đăng ký sự kiện từ MainWindow
             if (Window.GetWindow(this) is MainWindow mainWindow)
@@ -87,67 +99,137 @@ namespace SpotifyProject.Views
             SubMenuPopup.IsOpen = true;
         }
 
+
+        private void OpenDiaLogSong()
+        {
+            // Khởi tạo OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            // Thiết lập các thuộc tính cho OpenFileDialog
+            openFileDialog.Filter = "Music files (*.mp3)|*.mp3|All files (*.*)|*.*";
+            openFileDialog.Title = "Select Music Files";
+            openFileDialog.Multiselect = true; // Cho phép người dùng chọn nhiều file
+
+            // Mở hộp thoại chọn file
+            bool? result = openFileDialog.ShowDialog();
+
+            // Xử lý kết quả chọn file
+            if (result == true)
+            {
+                // Lấy danh sách các đường dẫn của các file được chọn
+                string[] selectedFiles = openFileDialog.FileNames;
+
+                // Xử lý logic với danh sách các đường dẫn file ở đây
+                foreach (string filePath in selectedFiles)
+                {
+                    // Đọc thông tin ID3 của file MP3
+                    using (var mp3 = new Mp3(filePath))
+                    {
+                        Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2X);
+                        var duration = mp3.Audio.Duration;
+
+                        if (tag != null)
+                        {
+                            // Lấy thông tin từ các khung ID3
+                            string title = tag.Title;
+                            string artist = tag.Artists;
+                            string album = tag.Album;
+                            string year = tag.Year;
+                            string genre = tag.Genre;
+                            string length = $"{duration.Minutes}:{duration.Seconds}";
+
+                            Song song = new Song(title ?? "Unknown", (artist == "" ? "Unknown" : artist), album ?? "Unknown", year ?? "Unknown", genre ?? "Unknown", length ?? "Unknown", filePath);
+                            PlaylistPageVM.AddSongToPlaylist(song);
+                        }
+                        else
+                        {
+                            // Create Object Song
+                            Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "Unknown", "Unknown", "Unknown", "Unknown", $"{duration.Minutes}:{duration.Seconds}", filePath);
+                            PlaylistPageVM.AddSongToPlaylist(song);
+                        }
+                    }
+
+                }
+
+                // reload playlist
+                List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
+                listItemsMedia.ItemsSource = lst;
+
+                MessageBox.Show("Add Audio successfully!");
+            }
+
+            // Đóng Popup sau khi xử lý
+            SubMenuPopup.IsOpen = false;
+        }
+
+        private void OpenDialogVideo()
+        {
+            // Khởi tạo OpenFileDialog
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            // Thiết lập các thuộc tính cho OpenFileDialog
+            openFileDialog.Filter = "Video files (*.mp4)|*.mp4|All files (*.*)|*.*";
+            openFileDialog.Title = "Select Video Files";
+            openFileDialog.Multiselect = true; // Cho phép người dùng chọn nhiều file
+
+            // Mở hộp thoại chọn file
+            bool? result = openFileDialog.ShowDialog();
+
+            // Xử lý kết quả chọn file
+            if (result == true)
+            {
+                // Lấy danh sách các đường dẫn của các file được chọn
+                string[] selectedFiles = openFileDialog.FileNames;
+
+                // Xử lý logic với danh sách các đường dẫn file ở đây
+                foreach (string filePath in selectedFiles)
+                {
+
+                    var info = new FileInfo(filePath);
+                    string title = info.Name.Substring(0, info.Name.IndexOf('.'));
+                    string artist = "Unknown";
+
+                    DateTime dateCreated = info.CreationTime;
+
+                    string date = dateCreated.ToString();
+
+                    var player = new WindowsMediaPlayer();
+                    var clip = player.newMedia(filePath);
+                    
+                    TimeSpan videoLength = TimeSpan.FromSeconds(clip.duration); // Chuyển đổi từ miliseconds sang giây
+
+                    // Định dạng chuỗi độ dài theo "hh:mm:ss"
+                    string length = $"{(int)videoLength.TotalHours:D2}:{videoLength.Minutes:D2}:{videoLength.Seconds:D2}";
+
+                    Video video = new Video(title, artist, filePath, date, length);
+                    PlaylistPageVM.AddVideoToPlaylist(video);
+
+
+                }
+
+                // reload playlist
+                PlaylistPageVM.LoadPlaylist();
+                List<Video> lst = MediaHelper.castMediaItemsToVideos(PlaylistPageVM.Playlist.MediaItems);
+                listItemsMedia.ItemsSource = lst;
+
+                MessageBox.Show("Add Videos successfully!");
+            }
+
+            // Đóng Popup sau khi xử lý
+            SubMenuPopup.IsOpen = false;
+        }
         private void ListViewItem_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (sender is ListViewItem listViewItem)
             {
-                // Khởi tạo OpenFileDialog
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-
-                // Thiết lập các thuộc tính cho OpenFileDialog
-                openFileDialog.Filter = "Music files (*.mp3)|*.mp3|All files (*.*)|*.*";
-                openFileDialog.Title = "Select Music Files";
-                openFileDialog.Multiselect = true; // Cho phép người dùng chọn nhiều file
-
-                // Mở hộp thoại chọn file
-                bool? result = openFileDialog.ShowDialog();
-
-                // Xử lý kết quả chọn file
-                if (result == true)
+                if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
                 {
-                    // Lấy danh sách các đường dẫn của các file được chọn
-                    string[] selectedFiles = openFileDialog.FileNames;
-
-                    // Xử lý logic với danh sách các đường dẫn file ở đây
-                    foreach (string filePath in selectedFiles)
-                    {
-                        // Đọc thông tin ID3 của file MP3
-                        using (var mp3 = new Mp3(filePath))
-                        {
-                            Id3Tag tag = mp3.GetTag(Id3TagFamily.Version2X);
-                            var duration = mp3.Audio.Duration;
-
-                            if (tag != null)
-                            {
-                                // Lấy thông tin từ các khung ID3
-                                string title = tag.Title;
-                                string artist = tag.Artists;
-                                string album = tag.Album;
-                                string year = tag.Year;
-                                string genre = tag.Genre;
-                                string length = $"{duration.Minutes}:{duration.Seconds}";
-                                
-                                Song song = new Song( title ?? "Unknown", (artist == "" ? "Unknown" : artist), album ?? "Unknown", year ?? "Unknown", genre ?? "Unknown", length ?? "Unknown", filePath);
-                                PlaylistPageVM.AddSongToPlaylist(song);
-                            }else
-                            {
-                                // Create Object Song
-                                Song song = new Song(filePath.Substring(0, filePath.IndexOf('.')), "Unknown", "Unknown", "Unknown", "Unknown", $"{duration.Minutes}:{duration.Seconds}", filePath);
-                                PlaylistPageVM.AddSongToPlaylist(song);
-                            }
-                        }
-                          
-                    }
-
-                    // reload playlist
-                    PlaylistPageVM.LoadPlaylist();
-                    List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
-                    listItemsMedia.ItemsSource = lst;
-                    MessageBox.Show("Add song successfully!");
+                    OpenDiaLogSong();
                 }
-
-                // Đóng Popup sau khi xử lý
-                SubMenuPopup.IsOpen = false;
+                else
+                {
+                    OpenDialogVideo();
+                }
             }
         }
 
@@ -168,18 +250,38 @@ namespace SpotifyProject.Views
 
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            // select song and play
-            Song? selectedSong = ((FrameworkElement)sender).DataContext as Song;
 
-            if (selectedSong != null)
+            if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
             {
-                PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
-                PlayerMedia.CurrentSong = selectedSong;
-                PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
-                PlayerMedia.PlaySong(selectedSong.Path);
-                OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
-                
+                // select song and play
+                Song? selectedSong = ((FrameworkElement)sender).DataContext as Song;
+
+                if (selectedSong != null)
+                {
+                    PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                    PlayerMedia.CurrentSong = selectedSong;
+                    PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
+                    PlayerMedia.PlaySong(selectedSong.Path);
+                    OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+
+                }
+            }else
+            {
+                // select song and play
+                Video? selectedVideo = ((FrameworkElement)sender).DataContext as Video;
+
+                if (selectedVideo != null)
+                {
+                    PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                    PlayerMedia.CurrentVideo = selectedVideo;
+                    PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedVideo);
+                    PlayerMedia.PlaySong(selectedVideo.Path);
+                    OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+
+                }
             }
+
+            
         }
 
     }

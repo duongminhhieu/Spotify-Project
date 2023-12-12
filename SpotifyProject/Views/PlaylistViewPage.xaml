@@ -114,14 +114,14 @@
                         </TextBlock>
 
                         <TextBlock
-                            x:Name="AmountSongs"
+                            x:Name="AmountMedia"
                             Margin="8,0,0,0"
                             VerticalAlignment="Center"
                             FontSize="14"
                             FontWeight="DemiBold"
                             Foreground="White"
                             TextAlignment="Center">
-                            50 songs
+                            0 medias
                         </TextBlock>
                         <TextBlock
                             x:Name="AmountTime"

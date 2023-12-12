@@ -123,8 +123,8 @@ namespace SpotifyProject.Services
                     string name = reader["Name"].ToString();
                     string image = reader["Image"].ToString();
                     string description = reader["Description"].ToString();
-                    int type = Convert.ToInt32(reader["Type"].ToString());
-                    playlist = new Playlist(name, image, description, type == 1 ? PlaylistType.Song : PlaylistType.Video);
+                    string type = reader["Type"].ToString();
+                    playlist = new Playlist(name, image, description, type.Equals("Song") ? PlaylistType.Song : PlaylistType.Video);
                     playlist.Id = id;
 
                     // get list Media items
@@ -134,7 +134,7 @@ namespace SpotifyProject.Services
                 }
                 return playlist;
             }
-            catch
+            catch(Exception err)
             {
                 MessageBox.Show("Error getting playlist");
                 return new Playlist("", "", "", PlaylistType.Unknown);

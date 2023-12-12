@@ -34,6 +34,7 @@ namespace SpotifyProject.Services
         public static int CurrentSongIndex { get; set; } = 0;
         public static Playlist CurrentPlaylist { get; set; }
         public static Song CurrentSong { get; set; }
+        public static Video CurrentVideo { get; set; }
         public static int CurrentSongPosition { get; set; } = 0;
         public static int CurrentSongDuration { get; set; } = 0;
         public static int CurrentSongProgress { get; set; } = 0;

@@ -21,10 +21,16 @@ namespace SpotifyProject.ViewModels
             MediaService = new MediaService(DatabaseConnection.GetInstance().getConnection());
         }
 
-        public void AddSongToPlaylist(Song song)
+        public int AddSongToPlaylist(Song song)
         {
             int insertRow = MediaService.AddMediaItemSong(song, Playlist.Id);
-          
+            return insertRow;
+        }
+        public int AddVideoToPlaylist(Video video)
+        {
+            int insertRow = MediaService.AddMediaVideo(video, Playlist.Id);
+
+            return insertRow;
         }
 
         public void LoadPlaylist()

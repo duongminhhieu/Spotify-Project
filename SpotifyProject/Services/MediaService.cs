@@ -43,6 +43,32 @@ namespace SpotifyProject.Services
             
         }
 
+        public int AddMediaVideo(Video video, int idPlaylist)
+        {
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(connection);
+                command.CommandText = "INSERT INTO MediaItems (Title, Artist, Type, Path, Album, Year, Genre, Length, PlaylistId) VALUES (@title, @artist, @type, @path, @album, @year, @genre, @length, @idPlaylist)";
+                command.Parameters.AddWithValue("@title", video.Title);
+                command.Parameters.AddWithValue("@artist", video.Artist);
+                command.Parameters.AddWithValue("@type", video.Type);
+                command.Parameters.AddWithValue("@path", video.Path);
+                command.Parameters.AddWithValue("@album", "Unknown");
+                command.Parameters.AddWithValue("@year", video.Date);
+                command.Parameters.AddWithValue("@genre", "Unknown");
+                command.Parameters.AddWithValue("@length", video.Length);
+                command.Parameters.AddWithValue("@idPlaylist", idPlaylist);
+
+                int result = command.ExecuteNonQuery();
+                return result;
+            }
+            catch (Exception err)
+            {
+                MessageBox.Show("Error adding video to playlist");
+                return -1;
+            }
+        }
+
         public List<MediaItem> GetListMediaItemsOfPlaylist(int idPlaylist)
         {
             List<MediaItem> listMediaItems = new List<MediaItem>();
@@ -69,7 +95,7 @@ namespace SpotifyProject.Services
                         listMediaItems.Add(new Song(id, title, artist, album, year, gerne, length, path));
                     } else
                     {
-                        listMediaItems.Add(new Video(id, title, artist, path));
+                        listMediaItems.Add(new Video(id, title, artist, path, year, length));
                     }
                 }
                 return listMediaItems;
