@@ -69,11 +69,18 @@ namespace SpotifyProject.Views
         private void PlayMusicBtn_Click(object sender, RoutedEventArgs e)
         {
 
-            PlayerMediaService.CurrentPlaylist = PlaylistPageVM.Playlist;
-            PlayerMediaService.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
-            PlayerMediaService.CurrentSongIndex = 0;
-            PlayerMediaService.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
-            OnPlayPauseStateChanged(PlayerMediaService.IsPlaying);
+            if(PlaylistPageVM.Playlist.MediaItems.Count == 0)
+            {
+                MessageBox.Show("Playlist is empty!");
+                return;
+            }
+
+            PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+            PlayerMedia.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
+            PlayerMedia.CurrentSongIndex = 0;
+            PlayerMedia.PlaySong(PlaylistPageVM.Playlist.MediaItems[0].Path);
+
+            OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
         }
         private void OptionBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -166,11 +173,11 @@ namespace SpotifyProject.Views
 
             if (selectedSong != null)
             {
-                PlayerMediaService.CurrentPlaylist = PlaylistPageVM.Playlist;
-                PlayerMediaService.CurrentSong = selectedSong;
-                PlayerMediaService.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
-                PlayerMediaService.PlaySong(selectedSong.Path);
-                OnPlayPauseStateChanged(PlayerMediaService.IsPlaying);
+                PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                PlayerMedia.CurrentSong = selectedSong;
+                PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
+                PlayerMedia.PlaySong(selectedSong.Path);
+                OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
                 
             }
         }

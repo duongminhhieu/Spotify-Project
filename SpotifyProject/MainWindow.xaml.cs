@@ -27,6 +27,7 @@ namespace SpotifyProject
         {
             InitializeComponent();
         }
+        private DispatcherTimer timer;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -100,20 +101,20 @@ namespace SpotifyProject
 
         private void PlayIcon_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(PlayerMediaService.IsPlaying)
+            if(PlayerMedia.IsPlaying)
             {
-                PlayerMediaService.PauseSong();
+                PlayerMedia.PauseSong();
                 ChangeStateIcon();
                 timer.Stop();
-            } else if(PlayerMediaService.IsPaused)
+            } else if(PlayerMedia.IsPaused)
             {
-                PlayerMediaService.ContinueSong();
+                PlayerMedia.ContinueSong();
                 ChangeStateIcon();
                 timer.Start();
             }
-            else if(PlayerMediaService.IsStopped)
+            else if(PlayerMedia.IsStopped)
             {
-                PlayerMediaService.PlaySong(PlayerMediaService.player.URL);
+                PlayerMedia.PlaySong(PlayerMedia.player.URL);
                 ChangeStateIcon();
                 timer.Start();
             }
@@ -124,30 +125,30 @@ namespace SpotifyProject
             if (isPlaying)
             {
                 PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Pause;
-                SetCurrentSongInfo();
+                timer.Start();
 
             }
             else
             {
                 PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Play;
-                SetCurrentSongInfo();
+                timer.Stop();
 
             }
         }
 
         public void ChangeStateIcon()
         {
-            if (PlayerMediaService.IsPlaying)
+            if (PlayerMedia.IsPlaying)
             {
                 PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Pause;
                 SetCurrentSongInfo();
             }
-            else if (PlayerMediaService.IsPaused)
+            else if (PlayerMedia.IsPaused)
             {
                 PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Play;
                 SetCurrentSongInfo();
             }
-            else if (PlayerMediaService.IsStopped)
+            else if (PlayerMedia.IsStopped)
             {
                 PlayIcon.Icon = FontAwesome.WPF.FontAwesomeIcon.Play;
             }
@@ -155,30 +156,39 @@ namespace SpotifyProject
 
         public void SetCurrentSongInfo()
         {
-            if(PlayerMediaService.CurrentSong != null)
+            if(PlayerMedia.CurrentSong != null)
             {
-                nameSong.Text = PlayerMediaService.CurrentSong.Title;
-                nameArtist.Text = PlayerMediaService.CurrentSong.Artist;
-                EndDurationInfoSong.Text = PlayerMediaService.CurrentSong.Length;
+                nameSong.Text = PlayerMedia.CurrentSong.Title;
+                nameArtist.Text = PlayerMedia.CurrentSong.Artist;
+                EndDurationInfoSong.Text = PlayerMedia.CurrentSong.Length;
             }
           
         }
 
 
-        private DispatcherTimer timer;
-        public void OnSongChanged(object sender)
+  
+        public void UpdateProcessingInfo()
         {
-            UpdateDurationInfo();
-        }
-
-        public void UpdateDurationInfo()
-        {
-            if (PlayerMediaService.CurrentSong != null && PlayerMediaService.player != null)
+            if (PlayerMedia.CurrentSong != null && PlayerMedia.player != null)
             {
 
-                int currentPosition = PlayerMediaService.GetCurrentSongPosition();
+                int currentPosition = PlayerMedia.GetCurrentSongPosition();
+               
+                if(PlayerMedia.player.playState == WMPLib.WMPPlayState.wmppsStopped)
+                {
+                    if(PlayerMedia.ShuffleMode)
+                    {
+                        PlayerMedia.RandomSong();
+                    }
+                    else
+                    {
+                        PlayerMedia.NextSong();
+                    }
+                    timer.Start();
 
-                if(currentPosition % 60 < 10)
+                }
+
+                if (currentPosition % 60 < 10)
                 {
                     DurationInfoSong.Text = $"{currentPosition / 60}:0{(currentPosition % 60)}";
                 }
@@ -186,35 +196,38 @@ namespace SpotifyProject
                 {
                     DurationInfoSong.Text = $"{currentPosition / 60}:{(currentPosition % 60)}";
                 }
-                SliderBarProcessing.Maximum = PlayerMediaService.GetCurrentSongDuration();
+                SliderBarProcessing.Maximum = PlayerMedia.GetCurrentSongDuration();
 
                 SliderBarProcessing.Value = currentPosition;
                 SetCurrentSongInfo();
+                ChangeStateIcon();
             }
         }
 
         private void _timer_Tick(object? sender, EventArgs e)
         {
-            if (PlayerMediaService.IsPlaying)
+            if (PlayerMedia.IsPlaying)
             {
                 // Cập nhật thời gian liên tục
-                UpdateDurationInfo();
-            }
+                UpdateProcessingInfo();
+            } 
+            
         }
 
         private bool seeking = false;
         private int lastPos = 0;
         private void SliderBar_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (seeking && PlayerMediaService.CurrentSong != null)
+            if (seeking && PlayerMedia.CurrentSong != null)
             {
                 int value = Convert.ToInt32(SliderBarProcessing.Value);
                 if (Math.Abs(value - lastPos) > 1)
                 {
-                    PlayerMediaService.SetSongPosition(value);
+                    PlayerMedia.SetSongPosition(value);
                     lastPos = value;
                 }
             }
+         
         }
 
         private void SliderBarProcessing_GotMouseCapture(object sender, MouseEventArgs e)
@@ -230,8 +243,8 @@ namespace SpotifyProject
 
         private void NextSongBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(PlayerMediaService.CurrentSong != null) { 
-                PlayerMediaService.NextSong();
+            if(PlayerMedia.CurrentSong != null) { 
+                PlayerMedia.NextSong();
                 timer.Start();
 
             }
@@ -240,30 +253,38 @@ namespace SpotifyProject
 
         private void PreSongBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (PlayerMediaService.CurrentSong != null)
+            if (PlayerMedia.CurrentSong != null)
             {
-                PlayerMediaService.PreviousSong();
+                PlayerMedia.PreviousSong();
                 timer.Start();
-
-
             }
         }
 
         private void RandomSongBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
+            if (PlayerMedia.ShuffleMode)
+            {
+                PlayerMedia.SetShuffleMode(false);
+                RandomSongBtn.Foreground = Brushes.White;
+            }
+            else
+            {
+                PlayerMedia.SetShuffleMode(true);
+                RandomSongBtn.Foreground = Brushes.Green;
+            }
         }
 
         private void RepeatSongBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if(PlayerMediaService.RepeatMode == RepeatMode.One)
+            if(PlayerMedia.RepeatMode == RepeatMode.One)
             {
-                PlayerMediaService.RepeatMode = RepeatMode.Off;
+                PlayerMedia.SetRepeatMode(RepeatMode.Off);
                 RepeatSongBtn.Foreground = Brushes.White;
             }
             else
             {
-                PlayerMediaService.RepeatMode = RepeatMode.One;
+                PlayerMedia.SetRepeatMode(RepeatMode.One);
                 RepeatSongBtn.Foreground = Brushes.Green;
             }
         }
@@ -274,7 +295,7 @@ namespace SpotifyProject
             int value = Convert.ToInt32(SliderVolume.Value);
             if (Math.Abs(value - lastPos) > 1)
             {
-                PlayerMediaService.SetVolume(value);
+                PlayerMedia.SetVolume(value);
                 lastPos = value;
             }
         }

@@ -12,10 +12,18 @@ namespace SpotifyProject.Services
         One = 1,
         All = 2,
     }
-    public static class PlayerMediaService
+
+    public enum PlayerState
+    {
+        Playing = 3,
+        Paused = 2,
+        Stopped = 1
+    }
+
+    public static class PlayerMedia
     {
 
-        public static WMPLib.WindowsMediaPlayer player = new WMPLib.WindowsMediaPlayer();
+        public static WindowsMediaPlayer player = new WindowsMediaPlayer();
         public static RepeatMode RepeatMode { get; set; } = RepeatMode.Off;
         public static bool ShuffleMode { get; set; } = false;
         public static bool IsPlaying { get; set; } = false;
@@ -37,7 +45,7 @@ namespace SpotifyProject.Services
             player.controls.play();
             IsPlaying = true;
             IsPaused = false;
-            IsStopped = false;
+            IsStopped = false;            
         }
         public static void PauseSong()
         {
@@ -54,6 +62,7 @@ namespace SpotifyProject.Services
             IsPaused = false;
             IsStopped = true;
         }
+
 
         public static void MuteSong()
         {
@@ -78,8 +87,6 @@ namespace SpotifyProject.Services
             player.controls.currentPosition = position;
             CurrentSongPosition = position;
         }
-
-   
 
         public static void SetRepeatMode(RepeatMode repeatMode)
         {
@@ -173,6 +180,19 @@ namespace SpotifyProject.Services
                     CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
                     PlaySong(CurrentSong.Path);
                 }
+            }
+        }
+
+        // random song
+        public static void RandomSong()
+        {
+            if (CurrentPlaylist != null)
+            {
+                Random random = new Random();
+                int randomIndex = random.Next(0, CurrentPlaylist.MediaItems.Count - 1);
+                CurrentSongIndex = randomIndex;
+                CurrentSong = CurrentPlaylist.MediaItems[CurrentSongIndex] as Song;
+                PlaySong(CurrentSong.Path);
             }
         }
 
