@@ -30,11 +30,11 @@ namespace SpotifyProject.Views
     /// </summary>
     public partial class PlaylistViewPage : Page
     {
-       private PlaylistPageVM PlaylistPageVM { get; set; }
+        private PlaylistPageVM PlaylistPageVM { get; set; }
         public PlaylistViewPage(Playlist playlist)
         {
             InitializeComponent();
-            this.PlaylistPageVM= new PlaylistPageVM(playlist);
+            this.PlaylistPageVM = new PlaylistPageVM(playlist);
             this.DataContext = playlist;
         }
         public event EventHandler<bool> PlayPauseStateChanged;
@@ -46,7 +46,7 @@ namespace SpotifyProject.Views
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            if(PlaylistPageVM.Playlist.Type == PlaylistType.Video)
+            if (PlaylistPageVM.Playlist.Type == PlaylistType.Video)
             {
                 List<Video> lst = MediaHelper.castMediaItemsToVideos(PlaylistPageVM.Playlist.MediaItems);
                 listItemsMedia.ItemsSource = lst;
@@ -82,13 +82,13 @@ namespace SpotifyProject.Views
         private void PlayMusicBtn_Click(object sender, RoutedEventArgs e)
         {
 
-            if(PlaylistPageVM.Playlist.MediaItems.Count == 0)
+            if (PlaylistPageVM.Playlist.MediaItems.Count == 0)
             {
                 MessageBox.Show("Playlist is empty!");
                 return;
             }
 
-            if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
+            if (PlaylistPageVM.Playlist.Type == PlaylistType.Song)
             {
                 PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
                 PlayerMedia.CurrentSong = (Song)PlaylistPageVM.Playlist.MediaItems[0];
@@ -97,7 +97,7 @@ namespace SpotifyProject.Views
 
                 OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
             }
-        
+
         }
         private void OptionBtn_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -157,6 +157,7 @@ namespace SpotifyProject.Views
                 }
 
                 // reload playlist
+                PlaylistPageVM.LoadPlaylist();
                 List<Song> lst = MediaHelper.castMediaItemsToSongs(PlaylistPageVM.Playlist.MediaItems);
                 listItemsMedia.ItemsSource = lst;
 
@@ -200,7 +201,7 @@ namespace SpotifyProject.Views
 
                     var player = new WindowsMediaPlayer();
                     var clip = player.newMedia(filePath);
-                    
+
                     TimeSpan videoLength = TimeSpan.FromSeconds(clip.duration); // Chuyển đổi từ miliseconds sang giây
 
                     // Định dạng chuỗi độ dài theo "hh:mm:ss"
@@ -227,7 +228,7 @@ namespace SpotifyProject.Views
         {
             if (sender is ListViewItem listViewItem)
             {
-                if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
+                if (PlaylistPageVM.Playlist.Type == PlaylistType.Song)
                 {
                     OpenDiaLogSong();
                 }
@@ -256,40 +257,88 @@ namespace SpotifyProject.Views
         private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            if(PlaylistPageVM.Playlist.Type == PlaylistType.Song)
+            if (e.ChangedButton == MouseButton.Right)
             {
-                // select song and play
-                Song? selectedSong = ((FrameworkElement)sender).DataContext as Song;
-
-                if (selectedSong != null)
+                // Hiển thị ContextMenu
+                ((FrameworkElement)sender).ContextMenu.IsOpen = true;
+            }
+            else if (e.ChangedButton == MouseButton.Left)
+            {
+                if (PlaylistPageVM.Playlist.Type == PlaylistType.Song)
                 {
-                    PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
-                    PlayerMedia.CurrentSong = selectedSong;
-                    PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
-                    PlayerMedia.PlaySong(selectedSong.Path);
-                    OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+                    // select song and play
+                    Song? selectedSong = ((FrameworkElement)sender).DataContext as Song;
 
+                    if (selectedSong != null)
+                    {
+                        PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                        PlayerMedia.CurrentSong = selectedSong;
+                        PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedSong);
+                        PlayerMedia.PlaySong(selectedSong.Path);
+
+                        OnPlayPauseStateChanged(PlayerMedia.IsPlaying);
+
+                        PlaylistPageVM.AddRecentFile(selectedSong.Id, PlaylistPageVM.Playlist.Id);
+
+                    }
                 }
-            }else
-            {
-                // select song and play
-                Video? selectedVideo = ((FrameworkElement)sender).DataContext as Video;
-
-                if (selectedVideo != null)
+                else
                 {
-                    PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
-                    PlayerMedia.CurrentVideo = selectedVideo;
-                    //PlayerMedia.CurrentSongIndex = PlaylistPageVM.Playlist.MediaItems.IndexOf(selectedVideo);
+                    // select song and play
+                    Video? selectedVideo = ((FrameworkElement)sender).DataContext as Video;
 
-                    var dialog = new VideoViewDialog();
-                    PlayerMedia.PauseSong();
-                    bool? result = dialog.ShowDialog();
+                    if (selectedVideo != null)
+                    {
+                        PlayerMedia.CurrentPlaylist = PlaylistPageVM.Playlist;
+                        PlayerMedia.CurrentVideo = selectedVideo;
+                        PlaylistPageVM.AddRecentFile(selectedVideo.Id, PlaylistPageVM.Playlist.Id);
 
+                        var dialog = new VideoViewDialog();
+                        PlayerMedia.PauseSong();
+                        bool? result = dialog.ShowDialog();
+
+                    }
                 }
             }
 
-            
         }
 
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            // Lấy đối tượng được click vào từ ContextMenu
+            MenuItem menuItem = sender as MenuItem;
+            if (menuItem != null)
+            {
+                ContextMenu contextMenu = menuItem.Parent as ContextMenu;
+                if (contextMenu != null)
+                {
+                    FrameworkElement senderFrameworkElement = contextMenu.PlacementTarget as FrameworkElement;
+
+                    if (senderFrameworkElement != null)
+                    {
+                        // Lấy đối tượng DataContext từ FrameworkElement
+                        object selectedObject = senderFrameworkElement.DataContext;
+
+                        if (selectedObject is Song)
+                        {
+                            // Xử lý khi đối tượng là Song
+                            Song selectedSong = (Song)selectedObject;
+                            PlaylistPageVM.DeleteMediaItem(selectedSong.Id);
+                            PlaylistPageVM.LoadPlaylist();
+                            listItemsMedia.ItemsSource = PlaylistPageVM.Playlist.MediaItems;
+                        }
+                        else if (selectedObject is Video)
+                        {
+                            // Xử lý khi đối tượng là Video
+                            Video selectedVideo = (Video)selectedObject;
+                            PlaylistPageVM.DeleteMediaItem(selectedVideo.Id);
+                            PlaylistPageVM.LoadPlaylist();
+                            listItemsMedia.ItemsSource = PlaylistPageVM.Playlist.MediaItems;
+
+                        }
+                    }
+                }
+            }
+        }
     }
 }

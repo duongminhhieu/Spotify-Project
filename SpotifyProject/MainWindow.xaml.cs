@@ -1,4 +1,7 @@
-﻿using SpotifyProject.Services;
+﻿using SpotifyProject.Models;
+using SpotifyProject.Services;
+using SpotifyProject.ViewModels;
+using SpotifyProject.Views.Dialog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +26,27 @@ namespace SpotifyProject
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private MainWindowVM mainWindowVM;
+        private DispatcherTimer timer;
+
         public MainWindow()
         {
             InitializeComponent();
+            mainWindowVM = new MainWindowVM();
+            this.DataContext = mainWindowVM;
         }
-        private DispatcherTimer timer;
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            mainFrame.Navigate(new Uri("Views/HomePage.xaml", UriKind.Relative));
+
             timer = new DispatcherTimer();
             timer.Interval = new TimeSpan(0, 0, 0, 1, 0);
             timer.Tick += _timer_Tick;
+
+            mainWindowVM.LoadRecents();
+            recentsList.ItemsSource = mainWindowVM.RecentViews;
         }
 
 
@@ -68,7 +81,7 @@ namespace SpotifyProject
                 switch (stackPanelName)
                 {
                     case "homePanel":
-                        MessageBox.Show("Home clicked!");
+                        mainFrame.Navigate(new Uri("Views/HomePage.xaml", UriKind.Relative));
                         break;
                     case "searchPanel":
                         MessageBox.Show("Search clicked!");
@@ -316,6 +329,79 @@ namespace SpotifyProject
                
 
             }   
+            
+        }
+
+        private void Grid_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+  
+            // select song and play
+            RecentView? selected = ((FrameworkElement)sender).DataContext as RecentView;
+
+            if (selected != null)
+            {
+                PlayerMedia.CurrentPlaylist = mainWindowVM.PlaylistService.GetPlaylist(selected.PlaylistId);
+                if(PlayerMedia.CurrentPlaylist.Type == PlaylistType.Song)
+                {
+                    var songIndex = 0;
+                    Song CurrentSong = null;
+                    foreach (var song in PlayerMedia.CurrentPlaylist.MediaItems)
+                    {
+                        if (song.Id == selected.MediaItemId)
+                        {
+                            CurrentSong = (Song?)song;
+                            break;
+                        }
+                        songIndex++;
+                    }
+
+                    if(CurrentSong != null)
+                    {
+                        PlayerMedia.CurrentSong = CurrentSong;
+                        PlayerMedia.CurrentSongIndex = songIndex;
+                        PlayerMedia.PlaySong(CurrentSong.Path);
+                        timer.Start();
+                    } else
+                    {
+                        // reload recents
+                        mainWindowVM.LoadRecents();
+                        recentsList.ItemsSource = mainWindowVM.RecentViews;
+                        MessageBox.Show("File not found!");
+
+                    }
+
+
+                } else if(PlayerMedia.CurrentPlaylist.Type == PlaylistType.Video)
+                {
+                    var videoIndex = 0;
+                    Video CurrentVideo = null;
+                    foreach (var video in PlayerMedia.CurrentPlaylist.MediaItems)
+                    {
+                        if (video.Id == selected.MediaItemId)
+                        {
+                            CurrentVideo = (Video?)video;
+                            break;
+                        }
+                        videoIndex++;
+                    }
+
+                    if(CurrentVideo != null)
+                    {
+                        PlayerMedia.CurrentVideo = CurrentVideo;
+                        PlayerMedia.PauseSong();
+                        var dialog = new VideoViewDialog();
+                        bool? result = dialog.ShowDialog();
+                    } else
+                    {
+                        // reload recents
+                        mainWindowVM.LoadRecents();
+                        recentsList.ItemsSource = mainWindowVM.RecentViews;
+                        MessageBox.Show("File not found!");
+
+                    }
+                }
+               
+            }
             
         }
     }

@@ -258,11 +258,11 @@
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <Grid
-                        MouseDown="Grid_MouseDown"
                         Height="36"
                         Margin="10"
                         HorizontalAlignment="Center"
-                        Cursor="Hand">
+                        Cursor="Hand"
+                        MouseDown="Grid_MouseDown">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="40" />
                             <ColumnDefinition Width="1*" />
@@ -315,6 +315,14 @@
 
                             </StackPanel>
                         </StackPanel>
+
+                        <!--  Thêm ContextMenu  -->
+                        <Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Click="DeleteMenuItem_Click" Header="Delete from playlist " />
+                                <!--  Thêm các mục menu khác nếu cần  -->
+                            </ContextMenu>
+                        </Grid.ContextMenu>
 
                     </Grid>
                 </DataTemplate>

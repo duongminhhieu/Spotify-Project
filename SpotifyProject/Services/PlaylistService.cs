@@ -142,5 +142,29 @@ namespace SpotifyProject.Services
             
         }
 
+        // Delete media item from playlist
+        public void DeleteMediaItemFromPlaylist(int idMediaItem, int idPlaylist)
+        {
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(connection);
+                command.CommandText = "DELETE FROM MediaItems WHERE Id = @idMediaItem AND PlaylistId = @idPlaylist";
+                command.Parameters.AddWithValue("@idMediaItem", idMediaItem);
+                command.Parameters.AddWithValue("@idPlaylist", idPlaylist);
+                command.ExecuteNonQuery();
+
+                // delete items in recents
+                command.CommandText = "DELETE FROM Recents WHERE MediaItemId = @idMediaItem AND PlaylistId = @idPlaylist";
+                command.Parameters.AddWithValue("@idMediaItem", idMediaItem);
+                command.Parameters.AddWithValue("@idPlaylist", idPlaylist);
+                command.ExecuteNonQuery();
+            }
+            catch
+            {
+                MessageBox.Show("Error deleting media item from playlist");
+            }
+            
+        }
+
     }
 }

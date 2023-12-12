@@ -48,6 +48,18 @@ namespace SpotifyProject.ViewModels
             wmp.controls.play();
         }
         
+
+        // Add recents
+        public void AddRecentFile(int idMedia, int idPlaylist)
+        {
+            MediaService.AddRecents(idMedia, idPlaylist);
+        }
+
+        // Delete media item
+        public void DeleteMediaItem(int idMedia)
+        {
+            PlaylistService.DeleteMediaItemFromPlaylist(idMedia, Playlist.Id);
+        }
        
     }
 }
